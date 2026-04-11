@@ -1,5 +1,8 @@
+package model;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import dao.EventDAO;
 
 import java.awt.*;
 

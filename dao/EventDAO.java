@@ -1,8 +1,11 @@
+package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
+
+import model.Event;
 
 public class EventDAO {
     public void addEvent(Event event) {

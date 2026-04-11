@@ -1,5 +1,7 @@
 import javax.swing.*;
 
+import model.Events;
+
 public class Main {
     public static void main(String[] args) {
 
