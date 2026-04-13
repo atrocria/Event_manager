@@ -1,17 +1,16 @@
 package dao;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import javax.swing.JOptionPane;
-
-import model.Event;
+import 
 
 public class EventDAO {
     public void addEvent(Event event) {
         String sql = "INSERT INTO events (name, date) VALUES (?, ?)";
 
-        //auto clse everything inside
+        //auto close everything inside
         try (Connection conn = Database.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
@@ -20,8 +19,8 @@ public class EventDAO {
             pstmt.executeUpdate();
         
         }catch (SQLException e) {
-            // exception handling
-            JOptionPane.showMessageDialog(null, "Database Error: " + e.getMessage());
+            // exception handling report to ui via controller or console
+            
         }
     }
 }

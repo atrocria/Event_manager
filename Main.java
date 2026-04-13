@@ -1,6 +1,6 @@
 import javax.swing.*;
 
-import model.Events;
+import ui.EventsUI;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,6 +12,6 @@ public class Main {
             e.printStackTrace();
         }
         // starts the GUI
-        SwingUtilities.invokeLater(() -> new Events().setVisible(true));
+        SwingUtilities.invokeLater(() -> new EventsUI().setVisible(true));
     }
 }

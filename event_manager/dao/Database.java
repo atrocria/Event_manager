@@ -4,6 +4,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import static java.lang.System.out;
 
+//! make a registrations join table to solve many to many relations
+
 public class Database {
 
     private static final String URL = "jdbc:mysql://localhost:3306/event_db";
