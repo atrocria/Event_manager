@@ -3,8 +3,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import 
+import java.util.logging.*;
+import model.Event;
 
 public class EventDAO {
     public void addEvent(Event event) {
@@ -20,6 +20,7 @@ public class EventDAO {
         
         }catch (SQLException e) {
             // exception handling report to ui via controller or console
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, "Database Connection Failed!", e);
             
         }
     }

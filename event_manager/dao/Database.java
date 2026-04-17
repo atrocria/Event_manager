@@ -1,8 +1,9 @@
 package dao;
+import static java.lang.System.out;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import static java.lang.System.out;
+import java.util.logging.*;
 
 //! make a registrations join table to solve many to many relations
 
@@ -17,7 +18,7 @@ public class Database {
             return DriverManager.getConnection(URL, USER, PASSWORD);
         }catch (SQLException e) {
             out.println("❌ Database Connection Failed!");
-            e.printStackTrace();
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, "Database Connection Failed!", e);
             return null;
         }
     }

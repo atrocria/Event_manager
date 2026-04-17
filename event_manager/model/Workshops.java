@@ -1,5 +1,5 @@
-package model;
+// package model;
 
-public class Workshops extends Event{
-    private String speaker;
-}
+// public class Workshops extends Event{
+//     private String speaker;
+// }
