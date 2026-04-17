@@ -1,0 +1,14 @@
+C:\github\Event_manager\src\main\java\controller\EventController.java
+C:\github\Event_manager\src\main\java\dao\Database.java
+C:\github\Event_manager\src\main\java\dao\EventDAO.java
+C:\github\Event_manager\src\main\java\model\Concert.java
+C:\github\Event_manager\src\main\java\model\Conference.java
+C:\github\Event_manager\src\main\java\model\Event.java
+C:\github\Event_manager\src\main\java\model\Genre.java
+C:\github\Event_manager\src\main\java\model\Performance.java
+C:\github\Event_manager\src\main\java\model\User.java
+C:\github\Event_manager\src\main\java\model\Workshops.java
+C:\github\Event_manager\src\main\java\module-info.java
+C:\github\Event_manager\src\main\java\service\EventService.java
+C:\github\Event_manager\src\main\java\ui\App.java
+C:\github\Event_manager\src\main\java\ui\DashboarUI.java

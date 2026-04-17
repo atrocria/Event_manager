@@ -1,4 +1,4 @@
-package ui;
+package ui; // Make sure this is at the top!
 
 import atlantafx.base.theme.PrimerDark;
 import javafx.application.Application;
@@ -9,21 +9,24 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-
-// stage is the window, scene is the current page;
 public class App extends Application {
+
+    @Override
     public void start(Stage stage) throws Exception {
-        // Set theme BEFORE loading the FXML
+        // 1. Set the Theme
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
 
-        // Load Scene Builder file
-        Parent root = FXMLLoader.load(getClass().getResource("main_view.fxml"));
+        // 2. Load the FXML (Now that it's in the same folder)
+        Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
 
-        // removes the ugly top bar
-        stage.initStyle(StageStyle.TRANSPARENT); 
+        // 3. Setup the Scene
         Scene scene = new Scene(root);
-        scene.setFill(Color.TRANSPARENT); // Makes the edges smooth
-        stage.setScene(new Scene(root));
+        
+        // This makes the window edges smooth and the background blendable
+        stage.initStyle(StageStyle.TRANSPARENT); 
+        scene.setFill(Color.TRANSPARENT); 
+
+        stage.setScene(scene);
         stage.show();
     }
 
