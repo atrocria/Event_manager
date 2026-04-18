@@ -3,11 +3,12 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.*;
-import model.Event;
+import model.EventModel;
 
 public class EventDAO {
-    public void addEvent(Event event) {
+    public void addEvent(EventModel event) {
         String sql = "INSERT INTO events (name, date) VALUES (?, ?)";
 
         //auto close everything inside
@@ -23,5 +24,10 @@ public class EventDAO {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, "Database Connection Failed!", e);
             
         }
+    }
+
+    public List<EventModel> getAllEvents() {
+        // JDBC code: "SELECT * FROM events"
+        return List.of(new EventModel("Concert"), new EventModel("Tech Talk")); 
     }
 }

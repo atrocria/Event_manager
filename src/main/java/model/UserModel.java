@@ -1,20 +1,24 @@
 package model;
 
+import java.sql.Timestamp;
+
 enum UserRole {
     ADMIN, STAFF, ORGANIZER, ATTENDEE, SPEAKER
 }
 
-public class User {
+public class UserModel {
     private int id;
     private String name;
     private String email;
+    private String password;
     private UserRole role;
+    private Timestamp CreatedAt;
 
     public boolean canEditEvent() {
         return this.role == UserRole.ADMIN || this.role == UserRole.STAFF;
     }
 
-    public User(int id, String name, String email, UserRole role){
+    public UserModel(int id, String name, String email, UserRole role){
         this.id = id;
         this.name = name;
         this.email = email;

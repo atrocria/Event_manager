@@ -23,8 +23,11 @@ public class App extends Application {
         Scene scene = new Scene(root);
         
         // This makes the window edges smooth and the background blendable
-        stage.initStyle(StageStyle.TRANSPARENT); 
-        scene.setFill(Color.TRANSPARENT); 
+        stage.initStyle(StageStyle.TRANSPARENT);
+        scene.setFill(Color.TRANSPARENT);
+
+        //! only the anchorpane is set to see through rn, make top and side only see through and glass like
+        // root.setStyle("-fx-background-color: rgba(255, 255, 255, 0.5); -fx-background-radius: 10;");
 
         stage.setScene(scene);
         stage.show();

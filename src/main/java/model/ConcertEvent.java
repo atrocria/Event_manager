@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 // import java.util.ArrayList;
 import java.util.List;
 
-public class Concert extends Event {
+public class ConcertEvent extends EventModel {
     private final String artistName;
     // private List<Performance> performances = new ArrayList<>();
-    private final Genre genre;
+    private final GenreModel genre;
 
-    public Concert(int id, String name, String venue, String date, LocalDateTime startTime, int endTime, int durationMin, int ticketCapacity, List<User> attendees, String artistName, Genre genre) {
+    public ConcertEvent(int id, String name, String venue, String date, LocalDateTime startTime, int endTime, int durationMin, int ticketCapacity, List<UserModel> attendees, String artistName, GenreModel genre) {
         super(id, name, venue, date, startTime, durationMin, ticketCapacity, attendees);
         this.artistName = artistName;
         this.genre = genre;
@@ -26,27 +26,27 @@ public class Concert extends Event {
     }
 
     public String getArtistName() {return artistName;}
-    public Genre getGenre() {return genre;}
+    public GenreModel getGenre() {return genre;}
 
     //! do not understand
-    public List<Concert> filterPop(List<Concert> all) {
+    public List<ConcertEvent> filterPop(List<ConcertEvent> all) {
         return all.stream()
-                .filter(c -> c.getGenre() == Genre.POP)
+                .filter(c -> c.getGenre() == GenreModel.POP)
                 .toList();
     }
 
     // check whether the performance can be created, only used by services
-    // public bool canAddPerformance(int performanceTime){
-    //     if(performanceTime <= 0)
-    //         return false;
+    public bool canAddPerformance(int performanceTime){
+        if(performanceTime <= 0)
+            return false;
 
-    //     if(performanceTime > startTime.plusMinutes(durationMin)){
-    //         int alreadyScheduledTime = performanceTime
-    //     }
-    // }
+        if(performanceTime > startTime.plusMinutes(durationMin)){
+            int alreadyScheduledTime = performanceTime
+        }
+    }
 
-    // @Override
-    // public double calculateTicketPrice(){
-    //     return
-    // }
+    @Override
+    public double calculateTicketPrice(){
+        return
+    }
 }

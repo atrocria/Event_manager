@@ -1,5 +1,5 @@
 package model;
 
-public enum Genre{
+public enum GenreModel{
     ROCK, POP, JAZZ, METAL, CLASSICAL, HIP_HOP
 }
