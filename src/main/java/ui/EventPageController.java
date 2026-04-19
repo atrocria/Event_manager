@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.util.List;
 
+import dao.EventDAO;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 
@@ -22,7 +23,7 @@ public class EventPageController {
         eventContainer.getChildren().clear(); // Clear old list
         
         // 1. Get data from your DB (Mocking it here)
-        List<String> events = database.getEvents(searchQuery); 
+        List<String> events = EventDAO.getEvents(searchQuery); 
         
         for (String eventTitle : events) {
             // 2. Create a new UI element for each event

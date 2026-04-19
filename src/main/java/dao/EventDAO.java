@@ -28,6 +28,11 @@ public class EventDAO {
 
     public List<EventModel> getAllEvents() {
         // JDBC code: "SELECT * FROM events"
-        return List.of(new EventModel("Concert"), new EventModel("Tech Talk")); 
+        return List.of(new EventModel("Concert"), new EventModel("Tech Talk"));
+    }
+    
+    // from searcher inside eventpagecontroller, search via string
+    public EventModel getEvents(String search) {
+        //! some search shit ig
     }
 }

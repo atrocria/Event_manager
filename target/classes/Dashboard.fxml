@@ -18,7 +18,7 @@
       <TextField layoutX="123.0" layoutY="16.0" prefHeight="26.0" prefWidth="647.0" style="-fx-background-radius: 15;" />
       <ScrollPane layoutX="26.0" layoutY="66.0" prefHeight="475.0" prefWidth="625.0">
          <content>
-            <VBox alignment="CENTER" prefHeight="473.0" prefWidth="622.0" />
+            <VBox fx:id="eventContainer" alignment="CENTER" prefHeight="473.0" prefWidth="622.0" />
          </content>
       </ScrollPane>
    </children>
