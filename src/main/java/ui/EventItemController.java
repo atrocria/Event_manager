@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import model.ConcertEvent;
+import model.ConferenceEvent;
 import model.EventModel;
 
 import java.io.IOException;
@@ -15,6 +17,9 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 
 public class EventItemController {
+
+    @FXML private Label titleLabel;
+    @FXML private Label typeBadge;
 
     // individual card info for event displaying tab
     public void setData(EventModel event) {

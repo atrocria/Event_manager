@@ -2,10 +2,6 @@ package model;
 
 import java.sql.Timestamp;
 
-enum UserRole {
-    ADMIN, STAFF, ORGANIZER, ATTENDEE, SPEAKER
-}
-
 public class UserModel {
     private int id;
     private String name;

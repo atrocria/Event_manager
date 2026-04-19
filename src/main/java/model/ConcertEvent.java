@@ -9,8 +9,8 @@ public class ConcertEvent extends EventModel {
     // private List<Performance> performances = new ArrayList<>();
     private final GenreModel genre;
 
-    public ConcertEvent(int id, String name, String venue, String date, LocalDateTime startTime, int endTime, int durationMin, int ticketCapacity, List<UserModel> attendees, String artistName, GenreModel genre) {
-        super(id, name, venue, date, startTime, durationMin, ticketCapacity, attendees);
+    public ConcertEvent(int id, String title, String description, String venue, String date, LocalDateTime startTime, String organizer, int durationMin, String registrationDeadLine, int max_attendees, String status, String creationTime, List<UserModel> attendees, String artistName, GenreModel genre) {
+        super(id, title, description, venue, date, startTime, organizer, durationMin, registrationDeadLine, max_attendees, status, creationTime, attendees);
         this.artistName = artistName;
         this.genre = genre;
     }
