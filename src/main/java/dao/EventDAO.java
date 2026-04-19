@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.*;
 
@@ -16,6 +17,14 @@ import model.UserModel;
 import model.UserRole;
 
 public class EventDAO {
+    
+    // User role
+    public UserRole findHighestRole(List<UserRole> roles) {
+        return roles.stream()
+                    .max(Comparator.comparingInt(UserRole::getLevel))
+                    .orElse(UserRole.ATTENDEE);
+    }
+
     public void addEvent(EventModel event) {
         String sql = "INSERT INTO events (name, date) VALUES (?, ?)";
 

@@ -21,9 +21,9 @@ public class EventItemController {
     @FXML private Label titleLabel;
     @FXML private Label typeBadge;
 
-    // individual card info for event displaying tab
+    //! translation layer set data inside
     public void setData(EventModel event) {
-        titleLabel.setText(event.getName());
+        titleLabel.setText(event.getTitle());
         typeBadge.setText(event.getClass().getSimpleName().replace("Event", ""));
         
         // Check type to show the "Special" field
