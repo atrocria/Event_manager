@@ -52,7 +52,7 @@ public class EventPageController {
         try {
             for (EventModel event : events) {
                 // 1. Load the FXML for the individual card
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/EventItem.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/EventItem.fxml"));
                 VBox card = loader.load(); //! Assuming the root of event_item.fxml is a VBox
 
                 // 2. Get the controller attached to that card

@@ -5,12 +5,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class ConcertEvent extends EventModel {
-    private final String artistName;
+    private String artistName;
     // private List<Performance> performances = new ArrayList<>();
-    private final GenreModel genre;
+    private GenreModel genre;
 
-    public ConcertEvent(int id, String title, String description, String venue, String date, LocalDateTime startTime, String organizer, int durationMin, String registrationDeadLine, int max_attendees, String status, String creationTime, List<UserModel> attendees, String artistName, GenreModel genre) {
-        super(id, title, description, venue, date, startTime, organizer, durationMin, registrationDeadLine, max_attendees, status, creationTime, attendees);
+    public ConcertEvent() {}
+
+    public ConcertEvent(int id, String title, String description, int venue, String date, LocalDateTime startTime,
+            String organizer, int durationMin, String registrationDeadLine, int max_attendees, String status,
+            String creationTime, String type, List<UserModel> attendees, String artistName, GenreModel genre) {
+        super(id, title, description, venue, date, startTime, organizer, durationMin, registrationDeadLine, max_attendees, status, creationTime, type, attendees);
         this.artistName = artistName;
         this.genre = genre;
     }
@@ -26,6 +30,7 @@ public class ConcertEvent extends EventModel {
     }
 
     public String getArtistName() {return artistName;}
+    public void setArtistName(String var1) {this.artistName = var1;}
     public GenreModel getGenre() {return genre;}
 
     //! do not understand
@@ -35,18 +40,19 @@ public class ConcertEvent extends EventModel {
                 .toList();
     }
 
-    // check whether the performance can be created, only used by services
-    public bool canAddPerformance(int performanceTime){
-        if(performanceTime <= 0)
-            return false;
+    // // check whether the performance can be created, only used by services
+    // public bool canAddPerformance(int performanceTime){
+    //     if(performanceTime <= 0)
+    //         return false;
 
-        if(performanceTime > startTime.plusMinutes(durationMin)){
-            int alreadyScheduledTime = performanceTime
-        }
-    }
+    //     if(performanceTime > startTime.plusMinutes(durationMin)){
+    //         int alreadyScheduledTime = performanceTime
+    //     }
+    // }
 
-    @Override
-    public double calculateTicketPrice(){
-        return
-    }
+    // @Override
+    // public double calculateTicketPrice(){
+    //! early bird prices
+    //     return
+    // }
 }

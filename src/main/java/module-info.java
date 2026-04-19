@@ -3,10 +3,12 @@ module event.manager {
     requires javafx.fxml;
     requires transitive javafx.graphics;
     requires atlantafx.base;
+
+    requires jbcrypt;
     
     // Add these two lines to fix the "not visible" errors:
-    requires java.sql;
     requires java.logging;
+    requires transitive java.sql;
 
     opens ui to javafx.fxml;
     exports ui;

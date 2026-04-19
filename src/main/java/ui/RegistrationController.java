@@ -12,36 +12,31 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.UserModel;
-import utils.UserSession;
+import model.UserRole;
 
-public class LoginController {
-
+public class RegistrationController {
+    @FXML private TextField nameField;
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
-    @FXML private Button loginBttn;
     @FXML private Button registerBttn;
 
-    // Inside your LoginController.java
-    public void handleLogin(ActionEvent event) {
-
+    @FXML
+    public void handleRegistration(ActionEvent event) {
+        String name = nameField.getText();
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        UserModel user = UserDao.authenticate(email, password);
-        if (user != null) {
-            // This is the "link" - storing the user globally
-            UserSession.getInstance().login(user);
+        // Pass UserRole.ATTENDEE here to set the default
+        boolean success = UserDao.register(name, email, password, UserRole.ATTENDEE);
 
-            // Then switch to the Event Page
-            switchScene("/main.fxml", event);
+        if (success) {
+            System.out.println("Registration successful for: " + name);
+            // Redirect back to login screen
+            switchScene("/Login.fxml", event);
+        } else {
+            System.err.println("Registration failed.");
+            // Optional: show an alert to the user here
         }
-    }
-
-    @FXML
-    private void handleRegisterNavigation(ActionEvent event) {
-        // take user to the Registration screen
-        switchScene("/Register.fxml", event);
     }
     
     private void switchScene(String fxmlPath, javafx.event.ActionEvent event) {

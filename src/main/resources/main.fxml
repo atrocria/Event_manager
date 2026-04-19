@@ -12,9 +12,9 @@
 
 <BorderPane minHeight="600.0" minWidth="1000.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MainController">
    <top>
-      <HBox prefHeight="29.0" prefWidth="1000.0" style="-fx-background-color: D3D3D3;" BorderPane.alignment="CENTER">
+      <HBox prefHeight="29.0" prefWidth="1000.0" style="-fx-background-color: #808080;" BorderPane.alignment="CENTER">
          <children>
-            <Label prefWidth="56.0" text="I'm a" textAlignment="CENTER">
+            <Label prefWidth="56.0" text="You are" textAlignment="CENTER">
                <padding>
                   <Insets left="5.0" />
                </padding>
@@ -27,13 +27,13 @@
          </children></HBox>
    </top>
    <left>
-      <VBox fillWidth="false" maxWidth="-Infinity" prefWidth="56.0" style="-fx-background-color: D3D3D3;" BorderPane.alignment="CENTER">
+      <VBox fillWidth="false" maxWidth="-Infinity" prefWidth="56.0" style="-fx-background-color: #808080;" BorderPane.alignment="CENTER">
          <children>
             <Button mnemonicParsing="false" onAction="#handleDashboardButton" text="Dash" />
-            <Button mnemonicParsing="false" text="events" />
-            <Button mnemonicParsing="false" text="Button" />
-            <Button mnemonicParsing="false" text="Button" />
-            <Button mnemonicParsing="false" text="Button" />
+            <Button mnemonicParsing="false" onAction="#handleDashboardButton" text="Events" />
+            <Button mnemonicParsing="false" text="Tickets" />
+            <Button fx:id="btnCreateEvent" mnemonicParsing="false" text="Button" />
+            <Button fx:id="btnAdminPanel" mnemonicParsing="false" onAction="#handleAdminButton" text="Button" />
             <Region prefHeight="275.0" prefWidth="54.0" VBox.vgrow="ALWAYS" />
             <Button mnemonicParsing="false" onAction="#handleSettingsButton" text="settings" />
             <Button mnemonicParsing="false" text="profile" />
