@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="944.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="15.0" layoutY="14.0" prefHeight="32.0" prefWidth="89.0" text="Events">
@@ -19,6 +18,11 @@
       <ScrollPane layoutX="26.0" layoutY="66.0" prefHeight="475.0" prefWidth="625.0">
          <content>
             <VBox fx:id="eventContainer" alignment="CENTER" prefHeight="473.0" prefWidth="622.0" />
+         </content>
+      </ScrollPane>
+      <ScrollPane layoutX="671.0" layoutY="66.0" prefHeight="475.0" prefWidth="250.0">
+         <content>
+            <VBox fx:id="eventContainer1" alignment="CENTER" prefHeight="474.0" prefWidth="249.0" />
          </content>
       </ScrollPane>
    </children>

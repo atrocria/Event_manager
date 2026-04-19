@@ -13,6 +13,7 @@ import model.ConferenceEvent;
 import model.WorkshopEvent;
 import model.EventModel;
 import model.UserModel;
+import model.UserRole;
 
 public class EventDAO {
     public void addEvent(EventModel event) {
@@ -122,7 +123,34 @@ public class EventDAO {
     }
     
     // from searcher inside eventpagecontroller, search via string
-    public EventModel getEvents(String search) {
-        //! some search shit ig
+    public List<EventModel> getEvents(String search) {
+        List<EventModel> events = new ArrayList<>();
+        // Search in title OR description
+        String sql = "SELECT * FROM event WHERE title LIKE ? OR description LIKE ?";
+
+        try (Connection conn = Database.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            // The % is a wildcard for SQL
+            String query = "%" + search + "%";
+            pstmt.setString(1, query);
+            pstmt.setString(2, query);
+            
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                // Use the same logic from your getAllEvents() to create 
+                // the specific event types (Concert, Workshop, etc.)
+                EventModel event = mapResultSetToEvent(rs); 
+                events.add(event);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "Search Failed", e);
+        }
+        return events;
     }
+
+    // Pro-tip: Move your rs.get... logic into a private helper method 
+    // so both getAllEvents() and getEvents() can use it without repeating code.
+
 }
