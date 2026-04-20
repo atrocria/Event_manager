@@ -6,6 +6,8 @@ public enum UserRole {
     STAFF(80),
     ORGANIZER(60),
     SPEAKER(40),
+    ARTIST(40),
+    KEYNOTE(40),
     ATTENDEE(20);
 
     private final int level;

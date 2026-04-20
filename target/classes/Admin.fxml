@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.AdminPageController">
+   <children>
+      <Label layoutX="6.0" layoutY="4.0" text="Control Panel" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="4.0">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Label>
+      <Button fx:id="ManageEventsBttn" layoutX="5.0" layoutY="43.0" mnemonicParsing="false" onAction="#DisplayManageEvents" text="Manage Events" AnchorPane.leftAnchor="5.0" />
+      <Button fx:id="ManageUsersBttn" layoutX="114.0" layoutY="43.0" mnemonicParsing="false" onAction="#DisplayManageUser" text="Manage Users" />
+      <Separator layoutX="1.0" layoutY="72.0" prefHeight="5.0" prefWidth="597.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="2.0" />
+      <AnchorPane layoutX="4.0" layoutY="81.0" prefHeight="314.0" prefWidth="592.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="81.0" />
+   </children>
+</AnchorPane>

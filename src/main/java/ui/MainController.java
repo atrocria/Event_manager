@@ -8,10 +8,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import model.EventModel;
 import model.UserModel;
 import model.UserRole;
-// import service.PermissionService;
 import utils.UserSession;
 
 import java.io.IOException;
@@ -31,6 +32,8 @@ public class MainController {
     @FXML private ComboBox<UserRole> roleSelector;
     
     public void initialize() {
+        // make the window draggble
+        setupDraggable();
         UserModel currentUser = UserSession.getInstance().getUser();
 
         if (currentUser == null) {
@@ -49,13 +52,12 @@ public class MainController {
             return;
         }
 
-        // UserRole currentRole = UserSession.getInstance().getUser().getrole();
+        UserRole currentRole = UserSession.getInstance().getUser().getrole();
 
         //! add this into event creator tab
-        // // Use the Service to check permission
+        // Use the Service to check permission
         // btnCreateEvent.setVisible(PermissionService.canCreateEvent(currentRole));
-        // btnAdminPanel.setVisible(PermissionService.canDeleteUser(currentRole));
-        // applyPermissionsBttn(currentRole); //whether need show admin controls
+        applyPermissionsBttn(currentRole); //whether need show admin controls
 
         // // Only show roles EQUAL TO or LOWER than the user's actual rank
         // for (UserRole role : UserRole.values()) {
@@ -72,7 +74,27 @@ public class MainController {
             applyPermissions(roleSelector.getValue());
         });
     }
-    
+
+    // Add these variables at the top of your class
+    private double xOffset = 0;
+    private double yOffset = 0;
+
+    @FXML private Region titleBarSpacer; // The Region in your FXML
+
+    private void setupDraggable() {
+        // We target the Region (spacer) or the HBox itself
+        titleBarSpacer.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+
+        titleBarSpacer.setOnMouseDragged(event -> {
+            Stage stage = (Stage) titleBarSpacer.getScene().getWindow();
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+        });
+    }
+        
     private void applyPermissions(UserRole selectedRole) {
         // Example: Hide the "Create Event" button if they switch to 'Attendee' view
         btnCreateEvent.setVisible(selectedRole.getLevel() >= 80);
@@ -84,50 +106,61 @@ public class MainController {
 
     // dashboard, cart, etc..
     @FXML
-    private AnchorPane contentArea; // This matches the fx:id you set
+    private AnchorPane contentArea;
 
     @FXML
     private void handleCloseButton(ActionEvent event) {
-        //todo check if already in the same view before loading in
         Platform.exit();
     }
-    // @FXML
-    // private void handleDashboardButton(ActionEvent event) {
-    //     //todo check if already in the same view before loading in
-    //     loadView("/Dashboard.fxml");
-    // }
-    // @FXML
-    // private void handleDashboardButton(ActionEvent event) {
-    //     //todo check if already in the same view before loading in
-    //     loadView("/Dashboard.fxml");
-    // }
+    
+    @FXML
+    private void handleMaximize(ActionEvent event) {
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        if (stage.isMaximized()) {
+            stage.setMaximized(false);
+        } else {
+            stage.setMaximized(true);
+        }
+    }
 
-    // This method handles the button clicks
+    @FXML
+    private void handleMinimizeButton(ActionEvent event) {
+        // finds the stage and sets iconified to true (Minimizes to taskbar)
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        stage.setIconified(true);
+    }
+
     @FXML
     private void handleDashboardButton(ActionEvent event) {
-        //todo check if already in the same view before loading in
         loadView("/Dashboard.fxml");
     }
     @FXML
     private void handleEventPageButton(ActionEvent event) {
-        //todo check if already in the same view before loading in
-        loadView("/EventPage.fxml");
+        try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/EventPage.fxml"));
+        
+        // Tell the EventPage who its parent (MainController) is
+        EventPageController pageController = loader.getController();
+        pageController.setMainController(this); 
+
+        Parent root = loader.load();
+        contentArea.getChildren().setAll(root);
+    } catch (IOException e) {
+        System.err.println(e);
+    }
     }
     @FXML
     private void handleCartButton(ActionEvent event) {
-        //todo check if already in the same view before loading in
         loadView("/Cart.fxml");
     }
     @FXML
     private void handleAdminButton(ActionEvent event) {
-        //todo check if already in the same view before loading in
-        loadView("/Dashboard.fxml");
+        loadView("/Admin.fxml");
     }
 
     // bottom
     @FXML
     private void handleProfileButton(ActionEvent event) {
-        //todo check if already in the same view before loading in
         loadView("/Profile.fxml");
     }
     @FXML
@@ -142,7 +175,7 @@ public class MainController {
         UserModel user = UserSession.getInstance().getUser();
         if (fxmlFile.equals("/AdminPanel.fxml") && user.getrole() != UserRole.ADMIN) {
             System.out.println("Access Denied to Admin Panel");
-            loadView("/Dashboard.fxml"); // Redirect them to safety
+            loadView("/Dashboard.fxml"); // Redirect to safety
             return;
         }
 
@@ -169,10 +202,33 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
+    public void showDetailedView(EventModel event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EventDetail.fxml"));
+            Parent detailView = loader.load();
+
+            // Pass the event data to the Detail Controller
+            EventDetailController controller = loader.getController();
+            controller.initializeDetails(event);
+
+            // Clear area and show the page
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(detailView);
+
+            // set fill all area
+            AnchorPane.setTopAnchor(detailView, 0.0);
+            AnchorPane.setBottomAnchor(detailView, 0.0);
+            AnchorPane.setLeftAnchor(detailView, 0.0);
+            AnchorPane.setRightAnchor(detailView, 0.0);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
     // only admins and staff can view these buttons >=80 permission level
     private void applyPermissionsBttn(UserRole selectedRole) {
-        btnCreateEvent.setVisible(selectedRole.getLevel() >= 60);
         btnAdminPanel.setVisible(selectedRole == UserRole.ADMIN);
 
         // If a user was on the Admin Panel but switched to "Attendee" view,

@@ -1,10 +1,13 @@
 dao\EventDAO.class
 model\ConferenceEvent.class
 service\PermissionService.class
+ui\AdminEventItemController.class
 dao\UserDao.class
+ui\EventDetailController.class
 ui\EventPageController.class
 ui\MainController.class
 module-info.class
+model\ConcertTicketType.class
 model\UserModel.class
 model\UserRole.class
 utils\UserSession.class
@@ -14,6 +17,7 @@ model\GenreModel.class
 ui\App.class
 ui\LoginController.class
 model\EventModel.class
+ui\AdminPageController.class
 model\WorkshopEvent.class
 dao\Database.class
 ui\RegistrationController.class

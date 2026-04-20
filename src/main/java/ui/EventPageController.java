@@ -14,8 +14,12 @@ import model.UserModel;
 import utils.UserSession;
 import dao.EventDAO;
 
+
 public class EventPageController {
     
+    // reference to parent
+    private MainController mainController;
+
     @FXML
     private VBox eventContainer; // The VBox inside your ScrollPane
     
@@ -25,23 +29,27 @@ public class EventPageController {
     @FXML
     public void initialize() {
         // Search as the user types (Dynamic)
-        searchField.getStyleClass().addAll(Styles.LEFT_PILL); //! any issue is prob here
+        searchField.getStyleClass().addAll(Styles.LEFT_PILL); //! search the database every time a new key is added or removed
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             loadEventsFromDatabase(newValue);
         });
 
         UserModel user = UserSession.getInstance().getUser();
         if (user != null) {
-            System.out.println("Currently logged in as: " + user.getname());
+            System.out.println("Currently inside EventsPage, logged in as: " + user.getname());
             // Use user.getrole() here to hide/show buttons
         }
-        
-        // Your existing search logic...
+
         loadEventsFromDatabase("");
+    }
+    
+    // this is how to call the main controller for callback
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 
     // Modify your existing method to handle the EventModel list
-   public void loadEventsFromDatabase(String searchQuery) {
+    public void loadEventsFromDatabase(String searchQuery) {
         eventContainer.getChildren().clear(); 
         
         EventDAO dao = new EventDAO();
@@ -53,19 +61,25 @@ public class EventPageController {
             for (EventModel event : events) {
                 // 1. Load the FXML for the individual card
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/EventItem.fxml"));
-                VBox card = loader.load(); //! Assuming the root of event_item.fxml is a VBox
+                VBox card = loader.load();
 
                 // 2. Get the controller attached to that card
                 EventItemController controller = loader.getController();
                 
-                //! not yet innitialized
-                controller.setData(event);
+                // lambda, express way to MainController.java -> EventDetail.fxml
+                controller.setData(event, (selectedEvent) -> {
+                    if (mainController != null) {
+                        mainController.showDetailedView(selectedEvent);
+                    } else {
+                        System.out.println("Error: MainController not linked to AdminPageController!");
+                    }
+                });
 
-                // 4. Add the card to your main container
+                // Add the card to main container
                 eventContainer.getChildren().add(card);
             }
         } catch (IOException e) {
-            e.printStackTrace(); // Always log FXML loading errors!
+            e.printStackTrace(); // log FXML errors
         }
     }
 }

@@ -10,7 +10,7 @@ import model.ConferenceEvent;
 import model.EventModel;
 import model.WorkshopEvent;
 
-public class EventItemController {
+public class AdminEventItemController {
 
     // to callback to parent and switch anchorpane page
     private EventModel event;
@@ -21,12 +21,10 @@ public class EventItemController {
     @FXML private Label descriptionLabel;
     @FXML private Label dateLabel;
     @FXML private Label deadlineLabel;
-    @FXML private Button EventDetailsBttn;
-    //! @FXML private Label typeBadge;
+    @FXML private Button ManageEventBttn;
+    // @FXML private Label typeBadge;
 
-    @FXML private Button TicketBttn;
-
-    // translation layer set data inside, and go to details page
+    //! translation layer set data inside
     public void setData(EventModel event, Consumer<EventModel> callback) {
         this.event = event;
         this.onDetailsRequested = callback;
@@ -47,9 +45,9 @@ public class EventItemController {
             extraInfoLabel.setText(""); // Hide if not applicable
         }
     }
-    
+
     @FXML
-    private void handleGetTicketButton(ActionEvent event) {
+    private void handleManageEventButton(ActionEvent event) {
         // give back the selected event to MainController to switch page
         if (onDetailsRequested != null) {
             onDetailsRequested.accept(this.event);

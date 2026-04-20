@@ -2,6 +2,7 @@ D:\Event_manager\src\main\java\dao\Database.java
 D:\Event_manager\src\main\java\dao\EventDAO.java
 D:\Event_manager\src\main\java\dao\UserDao.java
 D:\Event_manager\src\main\java\model\ConcertEvent.java
+D:\Event_manager\src\main\java\model\ConcertTicketType.java
 D:\Event_manager\src\main\java\model\ConferenceEvent.java
 D:\Event_manager\src\main\java\model\EventModel.java
 D:\Event_manager\src\main\java\model\GenreModel.java
@@ -11,8 +12,11 @@ D:\Event_manager\src\main\java\model\WorkshopEvent.java
 D:\Event_manager\src\main\java\module-info.java
 D:\Event_manager\src\main\java\service\EventService.java
 D:\Event_manager\src\main\java\service\PermissionService.java
+D:\Event_manager\src\main\java\ui\AdminEventItemController.java
+D:\Event_manager\src\main\java\ui\AdminPageController.java
 D:\Event_manager\src\main\java\ui\App.java
 D:\Event_manager\src\main\java\ui\DashboarUI.java
+D:\Event_manager\src\main\java\ui\EventDetailController.java
 D:\Event_manager\src\main\java\ui\EventItemController.java
 D:\Event_manager\src\main\java\ui\EventPageController.java
 D:\Event_manager\src\main\java\ui\LoginController.java

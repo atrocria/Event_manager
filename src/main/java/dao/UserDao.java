@@ -3,6 +3,7 @@ package dao;
 import model.UserModel;
 import model.UserRole;
 import java.sql.*;
+import java.util.List;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -56,5 +57,12 @@ public class UserDao {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<UserModel> getAllUsers() {
+        
+    }
+    public List<UserModel> getUsers(String search) {
+        
     }
 }
