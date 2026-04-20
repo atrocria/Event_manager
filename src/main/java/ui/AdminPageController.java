@@ -69,12 +69,12 @@ public class AdminPageController {
 
     @FXML
     public void DisplayManageEvents() {
-        loadControls("/ui/ManageEventsView.fxml");
+        loadControls("/ManageEvents.fxml");
     }
 
     @FXML
     public void DisplayManageUser() {
-        loadControls("/ui/ManageUsersView.fxml");
+        loadControls("/ManageUsers.fxml");
     }
 
     public void setMainController(MainController mainController) {
@@ -109,11 +109,11 @@ public class AdminPageController {
 
         try {
             for (EventModel event : events) {
-                // 1. Load the FXML for the individual card
+                // Load the FXML for the individual card
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminEventItem.fxml"));
                 VBox card = loader.load();
 
-                // 2. Get the controller attached to that card
+                // Get the controller attached to that card
                 EventItemController controller = loader.getController();
 
                 // lambda, express way to MainController.java -> EventDetail.fxml
@@ -146,6 +146,18 @@ public class AdminPageController {
                 // Load the FXML for the individual card
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminUserItem.fxml"));
                 VBox card = loader.load();
+
+                AdminUserItemController controller = loader.getController();
+
+                controller.setData(user, (selectedUser) -> {
+                    // Logic to delete the user
+                    boolean success = new UserDao().deleteUser(selectedUser.getid());
+                    if (success) {
+                        loadUsersFromDatabase(""); // Refresh the list
+                    } else {
+                        System.err.println("unable to delete user");
+                    }
+                });
 
                 // Add the card to main container
                 eventContainer.getChildren().add(card);

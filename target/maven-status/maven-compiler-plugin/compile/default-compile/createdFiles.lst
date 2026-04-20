@@ -6,8 +6,8 @@ dao\UserDao.class
 ui\EventDetailController.class
 ui\EventPageController.class
 ui\MainController.class
-module-info.class
 model\ConcertTicketType.class
+module-info.class
 model\UserModel.class
 model\UserRole.class
 utils\UserSession.class
@@ -19,6 +19,8 @@ ui\LoginController.class
 model\EventModel.class
 ui\AdminPageController.class
 model\WorkshopEvent.class
+ui\AdminUserItemController.class
 dao\Database.class
 ui\RegistrationController.class
+ui\AdminUserItemController$1.class
 model\ConcertEvent.class

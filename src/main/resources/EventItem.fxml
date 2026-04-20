@@ -43,7 +43,7 @@
                         <Font size="7.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="94.0" style="-fx-background-radius: 30;" text="Buy ticket" textFill="WHITE" />
+                  <Button fx:id="TicketBttn" mnemonicParsing="false" onAction="#handleBuyTicketButton" prefHeight="26.0" prefWidth="94.0" style="-fx-background-radius: 30;" text="Get ticket" textFill="WHITE" />
                </children>
             </VBox>
          </children>
