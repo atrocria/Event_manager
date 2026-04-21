@@ -12,7 +12,7 @@ public abstract class EventModel {
     private String type;
     private int venue;
     private String status;
-    private String creationTime;
+    private LocalDateTime creationTime;
     private String registrationDeadLine;
     private String organizer;
     private LocalDateTime startTime;
@@ -22,7 +22,7 @@ public abstract class EventModel {
 
     public EventModel() {}
 
-    public EventModel(int id, String title, String description, int venue, String date, LocalDateTime startTime, String organizer, int durationMin, String registrationDeadLine, int max_attendees, String status, String creationTime, 
+    public EventModel(int id, String title, String description, int venue, String date, LocalDateTime startTime, String organizer, int durationMin, String registrationDeadLine, int max_attendees, String status, LocalDateTime creationTime, 
             String type, List<UserModel> attendees) {
         this.id = id;
         this.title = title;
@@ -55,7 +55,7 @@ public abstract class EventModel {
     public String getRegistrationDeadLine() {return registrationDeadLine;}
     public String getStatus() {return status;}
     public String getType() {return type;}
-    public String getCreationTime() {return creationTime;}
+    public LocalDateTime getCreationTime() {return creationTime;}
     
     // setters
     public void setID(int var1) {this.id = var1;}
@@ -72,7 +72,7 @@ public abstract class EventModel {
     public void setStatus(String var1) {this.status = var1;}
     public void setType(String var1) {this.type = var1;}
 
-    public void setCreationTime(String var1) {this.creationTime = var1;}
+    public void setCreationTime(LocalDateTime var1) {this.creationTime = var1;}
     public LocalDateTime getEndTime(int durationMin) {
         if (startTime == null)
             return null;

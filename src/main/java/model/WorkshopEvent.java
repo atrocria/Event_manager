@@ -12,7 +12,7 @@ public class WorkshopEvent extends EventModel{
 
     public WorkshopEvent(int id, String title, String description, int venue, String date, LocalDateTime startTime,
             String organizer, int durationMin, String registrationDeadLine, int max_attendees, String status,
-            String creationTime, String type, List<UserModel> attendees, String presenter, String discussionTopics, String materialList) {
+            LocalDateTime creationTime, String type, List<UserModel> attendees, String presenter, String discussionTopics, String materialList) {
         super(id, title, description, venue, date, startTime, organizer, durationMin, registrationDeadLine, max_attendees, status, creationTime, type, attendees);
         this.presenter = presenter;
         this.discussionTopics = discussionTopics;

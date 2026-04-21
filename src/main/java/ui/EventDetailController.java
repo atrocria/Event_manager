@@ -22,8 +22,9 @@ public class EventDetailController {
     @FXML private Label dateTimeLabel;
     @FXML private Label venueLabel;
     @FXML private Label registrationDeadlineLabel;
-    @FXML private Label specialInfoLabel; // The Label that says "Special Information"
-    @FXML private Label dynamicDetailsLabel; // The Label for "Details based on event type"
+    @FXML private Label specialInfoLabel;
+    @FXML private Label dynamicDetailsLabel;
+    @FXML private Label eligibilityLabel;
     @FXML private Button bookTicketButton;
 
     private EventModel currentEvent;
@@ -37,13 +38,12 @@ public class EventDetailController {
     private void populateDetails() {
         if (currentEvent == null) return;
 
-        // 1. Set Common Fields
+        // common fields
         titleLabel.setText(currentEvent.getTitle());
         descriptionLabel.setText(currentEvent.getDescription());
         venueLabel.setText("Venue ID: " + currentEvent.getVenue());
         registrationDeadlineLabel.setText(currentEvent.getRegistrationDeadLine());
 
-        // Formatting Date & Time
         if (currentEvent.getStartTime() != null) {
             dateTimeLabel.setText(currentEvent.getDate() + " @ " + 
                 currentEvent.getStartTime().toLocalTime().toString());
@@ -51,10 +51,17 @@ public class EventDetailController {
             dateTimeLabel.setText(currentEvent.getDate());
         }
 
-        // 2. Set Type-Specific Details (Logic based on your DAO subclasses)
+        // event specific details
         if (currentEvent instanceof ConcertEvent) {
             specialInfoLabel.setText("Performer / Artist");
             dynamicDetailsLabel.setText(((ConcertEvent) currentEvent).getArtistName());
+
+            //eligible for early bird discount or VIP
+            if (((ConcertEvent) currentEvent).isEarlyBirdEligible()) {
+                eligibilityLabel.setText("Eligible for Early Bird Discount");
+            } else {
+                eligibilityLabel.setText("You are eligible for VIP seating");
+            }
             
         } else if (currentEvent instanceof ConferenceEvent) {
             specialInfoLabel.setText("Keynote Speaker & Topic");
@@ -73,14 +80,11 @@ public class EventDetailController {
 
     @FXML
     private void handleBookTicket() {
-        // Basic logic for booking
         if (currentEvent == null) return;
 
-        
         UserModel currentUser = UserSession.getInstance().getUser();
         
         if (currentUser != null && currentEvent != null) {
-            // 2. This is where you'd use the DAO (assuming you add a register method)
             eventDAO.registerUserForEvent(currentUser.getid(), currentEvent.getID(), null); //! add a ticket type selection later
             
             // You would typically call a RegistrationDAO here

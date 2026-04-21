@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" prefHeight="695.0" prefWidth="800.0" style=";" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EventDetailController">
+<ScrollPane fitToWidth="true" prefHeight="869.0" prefWidth="998.0" style=";" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EventDetailController">
    <content>
       <AnchorPane>
          <children>
@@ -71,6 +71,11 @@
                         <Label fx:id="dynamicDetailsLabel" text="Details based on event type..." textFill="WHITE" wrapText="true" />
                      </children>
                   </VBox>
+                  <Label fx:id="eligibilityLabel" text="eligibilityLabel" textFill="LIME">
+                     <VBox.margin>
+                        <Insets left="15.0" />
+                     </VBox.margin>
+                  </Label>
 
                   <Button fx:id="bookTicketButton" mnemonicParsing="false" prefHeight="45.0" prefWidth="200.0" style="-fx-background-color: #00ffcc; -fx-background-radius: 25; -fx-text-fill: #2b2b2b;" text="Book Ticket">
                      <font>

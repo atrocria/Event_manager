@@ -15,7 +15,7 @@ public class ConcertEvent extends EventModel {
 
     public ConcertEvent(int id, String title, String description, int venue, String date, LocalDateTime startTime,
             String organizer, int durationMin, String registrationDeadLine, int max_attendees, String status,
-            String creationTime, String type, List<UserModel> attendees, String artistName, GenreModel genre,
+            LocalDateTime creationTime, String type, List<UserModel> attendees, String artistName, GenreModel genre,
             String ticketType) {
         super(id, title, description, venue, date, startTime, organizer, durationMin, registrationDeadLine,
                 max_attendees, status, creationTime, type, attendees);
@@ -64,7 +64,7 @@ public class ConcertEvent extends EventModel {
     }
 
     // // check whether the performance can be created, only used by services
-    // public bool canAddPerformance(int performanceTime){
+    // public boolean canAddPerformance(int performanceTime){
     //     if(performanceTime <= 0)
     //         return false;
 
@@ -73,7 +73,22 @@ public class ConcertEvent extends EventModel {
     //     }
     // }
     
+    public boolean isEarlyBirdEligible() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime eventDate = getStartTime();
+        LocalDateTime datePosted = getCreationTime();
+        
+        // must be within 5 days of the event being posted
+        boolean withinFiveDaysOfPosting = now.isBefore(datePosted.plusDays(5));
+        
+        // must be at least one week (7 days) before the event starts
+        boolean atLeastOneWeekBefore = now.isBefore(eventDate.minusDays(7));
+        
+        // safety: Must not be less than one day before
+        boolean notTooLate = now.isBefore(eventDate.minusDays(1));
 
+        return withinFiveDaysOfPosting && atLeastOneWeekBefore && notTooLate;
+    }
 
     // @Override
     // public double calculateTicketPrice(){
