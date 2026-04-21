@@ -12,12 +12,10 @@ import model.UserModel;
 
 public class AdminUserItemController {
 
-    @FXML
-    private Label username;
-    @FXML
-    private Label useremail; // Renamed from bio for clarity
-    @FXML
-    private Label roleLabel;
+    @FXML private Label username;
+    @FXML private Label userEmail; // Renamed from bio for clarity
+    @FXML private Label roleLabel;
+    @FXML private Label dateJoineLabel;
 
     private UserModel user;
 
@@ -26,7 +24,8 @@ public class AdminUserItemController {
 
         // Use user methods, not event methods!
         username.setText(user.getname());
-        useremail.setText(user.getemail());
+        userEmail.setText(user.getemail());
+        dateJoineLabel.setText(user.getCreatedAt().toString());
 
         // Handle the Enum switch
         switch (user.getrole()) {
@@ -47,9 +46,10 @@ public class AdminUserItemController {
                 break;
         }
 
-        // Apply our black text fix for light-colored cards
+        // Apply black text fix for light-colored cards
         username.setStyle("-fx-text-fill: black;");
-        useremail.setStyle("-fx-text-fill: black;");
+        userEmail.setStyle("-fx-text-fill: black;");
+        dateJoineLabel.setStyle("-fx-text-fill: black;");
     }
 
     @FXML

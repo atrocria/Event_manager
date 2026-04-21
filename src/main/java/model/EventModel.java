@@ -49,6 +49,7 @@ public abstract class EventModel {
     public String getOrganizer() {return organizer;}
     public int getDurationMin() {return durationMin;}
     public int getMax_attendees() {return max_attendees;}
+    public int getAttendeesCount() {return attendees != null ? attendees.size() : 0;}
     public List<UserModel> getAttendees() {return attendees;}
     public String getDescription() {return description;}
     public String getRegistrationDeadLine() {return registrationDeadLine;}

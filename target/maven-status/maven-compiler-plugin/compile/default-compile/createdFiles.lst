@@ -12,6 +12,7 @@ model\UserModel.class
 model\UserRole.class
 utils\UserSession.class
 ui\ProfileController.class
+ui\AdminPageController$AdminView.class
 ui\EventItemController.class
 model\GenreModel.class
 ui\App.class

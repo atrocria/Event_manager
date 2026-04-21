@@ -21,29 +21,29 @@
                         <Font size="9.0" />
                      </font>
                   </Label>
-                  <Label layoutX="6.0" layoutY="25.0" prefHeight="15.0" prefWidth="157.0" text="description" textFill="WHITE">
+                  <Label fx:id="descriptionLabel" layoutX="6.0" layoutY="25.0" prefHeight="15.0" prefWidth="157.0" text="description" textFill="WHITE">
                      <font>
                         <Font size="8.0" />
                      </font>
                   </Label>
-                  <Label layoutX="7.0" layoutY="45.0" text="Date" textFill="WHITE">
+                  <Label fx:id="dateLabel" layoutX="7.0" layoutY="45.0" text="Date" textFill="WHITE">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </Label>
-                  <Label layoutX="305.0" layoutY="22.0" text="Deadline" textFill="WHITE" />
+                  <Label fx:id="deadlineLabel" layoutX="305.0" layoutY="22.0" text="Deadline" textFill="WHITE" />
                </children>
             </AnchorPane>
             <Region nodeOrientation="RIGHT_TO_LEFT" prefHeight="71.0" prefWidth="103.0" />
             <VBox prefHeight="75.0" prefWidth="122.0">
                <children>
                   <Region prefHeight="200.0" prefWidth="200.0" />
-                  <Label prefHeight="17.0" prefWidth="91.0" text="attendees / max_attendees" textFill="WHITE">
+                  <Label fx:id="attendeesCountLabel" prefHeight="17.0" prefWidth="91.0" text="attendees / max_attendees" textFill="WHITE">
                      <font>
                         <Font size="7.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="94.0" style="-fx-background-radius: 30;" text="Manage" textFill="WHITE" />
+                  <Button fx:id="ManageEventBttn" mnemonicParsing="false" onAction="#handleManageEventButton" prefHeight="26.0" prefWidth="94.0" style="-fx-background-radius: 30;" text="Manage" textFill="WHITE" />
                </children>
             </VBox>
          </children>

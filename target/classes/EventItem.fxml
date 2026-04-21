@@ -37,8 +37,8 @@
             <Region nodeOrientation="RIGHT_TO_LEFT" prefHeight="71.0" prefWidth="103.0" />
             <VBox prefHeight="75.0" prefWidth="122.0">
                <children>
-                  <Label text="duration" textFill="WHITE" />
-                  <Label prefHeight="17.0" prefWidth="91.0" text="attendees / max_attendees" textFill="WHITE">
+                  <Label fx:id="durationLabel" text="duration" textFill="WHITE" />
+                  <Label fx:id="attendeesCountLabel" prefHeight="17.0" prefWidth="91.0" text="attendees / max_attendees" textFill="WHITE">
                      <font>
                         <Font size="7.0" />
                      </font>

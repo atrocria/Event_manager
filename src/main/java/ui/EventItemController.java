@@ -19,10 +19,12 @@ public class EventItemController {
     @FXML private Label titleLabel;
     @FXML private Label extraInfoLabel;
     @FXML private Label descriptionLabel;
+    @FXML private Label attendeesCountLabel;
+    @FXML private Label durationLabel;
     @FXML private Label dateLabel;
     @FXML private Label deadlineLabel;
     @FXML private Button EventDetailsBttn;
-    //! @FXML private Label typeBadge;
+    // ! @FXML private Label typeBadge;
 
     @FXML private Button TicketBttn;
 
@@ -35,6 +37,8 @@ public class EventItemController {
         descriptionLabel.setText(event.getDescription());
         dateLabel.setText(event.getDate());
         deadlineLabel.setText(event.getRegistrationDeadLine());
+        attendeesCountLabel.setText(String.valueOf(event.getAttendeesCount()));
+        durationLabel.setText(String.valueOf(event.getDurationMin()));
         // typeBadge.setText(event.getClass().getSimpleName().replace("Event", ""));
 
         if (event instanceof ConcertEvent c) {

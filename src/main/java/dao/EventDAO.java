@@ -117,7 +117,7 @@ public class EventDAO {
         if ("CONCERT".equalsIgnoreCase(type)) {
             ConcertEvent ce = new ConcertEvent();
             ce.setArtistName(rs.getString("performer"));
-            // Assuming Genre is stored as a String in DB, convert to GenreModel
+            //! Genre is stored as a type or string?, convert to GenreModel
             //! ce.setGenre(GenreModel.valueOf(rs.getString("genre")));
             event = ce;
         } else if ("CONFERENCE".equalsIgnoreCase(type)) {
@@ -133,7 +133,6 @@ public class EventDAO {
         } else {
             // illegal ahh
             event = new WorkshopEvent();
-            System.out.println("LOG: Found unknown type [" + type + "], treating as Workshop for now.");
         }
 
         // Set Common Fields (Mapping DB columns to Model setters)
@@ -158,9 +157,6 @@ public class EventDAO {
 
         int eventId = rs.getInt("event_id");
         event.setAttendees(getAttendeesForEvent(eventId));
-
-        // Note: Attendees are usually fetched via a separate JOIN query
-        // or by calling your getAttendeesForEvent(event.getID()) method.
 
         return event;
     }
@@ -220,6 +216,22 @@ public class EventDAO {
             Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "Search Failed", e);
         }
         return events;
+    }
+
+    //! check this again
+    public void registerUserForEvent(int userId, int eventId) {
+        String sql = "INSERT INTO registration (user_id, event_id) VALUES (?, ?)";
+
+        try (Connection conn = Database.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, eventId);
+            pstmt.executeUpdate();
+            System.out.println("User " + userId + " registered for event " + eventId);
+        } catch (SQLException e) {
+            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "Registration Failed", e);
+        }
     }
 
     // Pro-tip: Move your rs.get... logic into a private helper method 
