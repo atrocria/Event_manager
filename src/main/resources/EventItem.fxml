@@ -21,17 +21,17 @@
                         <Font size="9.0" />
                      </font>
                   </Label>
-                  <Label layoutX="6.0" layoutY="25.0" prefHeight="15.0" prefWidth="157.0" text="description" textFill="WHITE">
+                  <Label fx:id="descriptionLabel" layoutX="6.0" layoutY="25.0" prefHeight="15.0" prefWidth="157.0" text="description" textFill="WHITE">
                      <font>
                         <Font size="8.0" />
                      </font>
                   </Label>
-                  <Label layoutX="7.0" layoutY="45.0" text="Date" textFill="WHITE">
+                  <Label fx:id="dateLabel" layoutX="7.0" layoutY="45.0" text="Date" textFill="WHITE">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </Label>
-                  <Label layoutX="300.0" layoutY="6.0" text="Deadline" textFill="WHITE" />
+                  <Label fx:id="deadlineLabel" layoutX="300.0" layoutY="6.0" text="Deadline" textFill="WHITE" />
                </children>
             </AnchorPane>
             <Region nodeOrientation="RIGHT_TO_LEFT" prefHeight="71.0" prefWidth="103.0" />
@@ -43,7 +43,7 @@
                         <Font size="7.0" />
                      </font>
                   </Label>
-                  <Button fx:id="TicketBttn" mnemonicParsing="false" onAction="#handleBuyTicketButton" prefHeight="26.0" prefWidth="94.0" style="-fx-background-radius: 30;" text="Get ticket" textFill="WHITE" />
+                  <Button fx:id="EventDetailsBttn" mnemonicParsing="false" onAction="#handleGetTicketButton" prefHeight="26.0" prefWidth="94.0" style="-fx-background-radius: 30;" text="Get ticket" textFill="WHITE" />
                </children>
             </VBox>
          </children>

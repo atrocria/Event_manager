@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -25,7 +26,7 @@ public class AdminPageController {
     @FXML private Button ManageUsersBttn;
 
     // This is the container you added in Scene Builder
-    @FXML private AnchorPane contentArea;
+    @FXML private ScrollPane contentArea;
     private MainController mainController;
 
     @FXML
@@ -40,13 +41,13 @@ public class AdminPageController {
         searchField.getStyleClass().addAll(Styles.LEFT_PILL); //! search the database every time a new key is added or removed
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             // 1. Check if the contentArea is empty
-            if (contentArea.getChildren().isEmpty()) {
+            if (eventContainer.getChildren().isEmpty()) {
                 System.out.println("Content area is empty.");
                 return;
             }
 
             // 2. Get the current root node loaded in the contentArea
-            Node currentView = contentArea.getChildren().get(0);
+            Node currentView = eventContainer.getChildren().get(0);
             String viewId = currentView.getId();
 
             if ("manageEventsRoot".equals(viewId)) {
@@ -87,7 +88,7 @@ public class AdminPageController {
             Parent node = FXMLLoader.load(getClass().getResource(fxmlPath));
 
             // Clear old content and set to new page called
-            contentArea.getChildren().setAll(node);
+            eventContainer.getChildren().setAll(node);
 
             AnchorPane.setTopAnchor(node, 0.0);
             AnchorPane.setBottomAnchor(node, 0.0);
@@ -114,7 +115,7 @@ public class AdminPageController {
                 VBox card = loader.load();
 
                 // Get the controller attached to that card
-                EventItemController controller = loader.getController();
+                AdminEventItemController controller = loader.getController();
 
                 // lambda, express way to MainController.java -> EventDetail.fxml
                 controller.setData(event, (selectedEvent) -> {

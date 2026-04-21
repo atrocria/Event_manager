@@ -103,7 +103,6 @@ public class MainController {
         btnMySessions.setVisible(selectedRole == UserRole.SPEAKER);
     }
 
-
     // dashboard, cart, etc..
     @FXML
     private AnchorPane contentArea;
@@ -137,17 +136,23 @@ public class MainController {
     @FXML
     private void handleEventPageButton(ActionEvent event) {
         try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/EventPage.fxml"));
-        
-        // Tell the EventPage who its parent (MainController) is
-        EventPageController pageController = loader.getController();
-        pageController.setMainController(this); 
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EventPage.fxml"));
+            
+            // 1. Load the FXML first (this instantiates the controller)
+            Parent root = loader.load(); 
+            
+            // 2. NOW get the controller
+            EventPageController pageController = loader.getController();
+            
+            // 3. Set the reference
+            if (pageController != null) {
+                pageController.setMainController(this); 
+            }
 
-        Parent root = loader.load();
-        contentArea.getChildren().setAll(root);
-    } catch (IOException e) {
-        System.err.println(e);
-    }
+            contentArea.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace(); // Use printStackTrace to see exactly what failed
+        }
     }
     @FXML
     private void handleCartButton(ActionEvent event) {

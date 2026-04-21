@@ -21,10 +21,10 @@ public class EventPageController {
     private MainController mainController;
 
     @FXML
-    private VBox eventContainer; // The VBox inside your ScrollPane
+    private VBox eventContainer;
     
     @FXML
-    private TextField searchField; // Link this to your FXML TextField
+    private TextField searchField;
 
     @FXML
     public void initialize() {

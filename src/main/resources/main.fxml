@@ -31,10 +31,10 @@
       <VBox fillWidth="false" maxWidth="-Infinity" prefWidth="56.0" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
          <children>
             <Button mnemonicParsing="false" onAction="#handleDashboardButton" text="Dash" />
-            <Button mnemonicParsing="false" onAction="#handleDashboardButton" text="Events" />
-            <Button mnemonicParsing="false" text="Tickets" />
-            <Button fx:id="btnCreateEvent" mnemonicParsing="false" onAction="#handleAdminButton" text="Admin" />
-            <Button fx:id="btnAdminPanel" mnemonicParsing="false" onAction="#handleAdminButton" text="Button" />
+            <Button mnemonicParsing="false" onAction="#handleEventPageButton" text="Events" />
+            <Button mnemonicParsing="false" onAction="#handleCartButton" text="Cart" />
+            <Button fx:id="btnAdminPanel" mnemonicParsing="false" onAction="#handleAdminButton" text="Admin" />
+            <Button fx:id="btnCreateEvent" mnemonicParsing="false" onAction="#handleAdminButton" text="Button" />
             <Region prefHeight="275.0" prefWidth="54.0" VBox.vgrow="ALWAYS" />
             <Button mnemonicParsing="false" onAction="#handleSettingsButton" text="settings" />
             <Button mnemonicParsing="false" text="profile" />
