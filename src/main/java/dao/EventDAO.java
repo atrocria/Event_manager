@@ -218,23 +218,29 @@ public class EventDAO {
         return events;
     }
 
-    //! check this again
-    public void registerUserForEvent(int userId, int eventId) {
-        String sql = "INSERT INTO registration (user_id, event_id) VALUES (?, ?)";
+    // from bookticket button, register user for event, insert into registration table
+    public void registerUserForEvent(int userId, int eventId, String ticketType) {
+        // We include ticket_type in the INSERT statement
+        String sql = "INSERT INTO registration (user_id, event_id, ticket_type) VALUES (?, ?, ?)";
 
         try (Connection conn = Database.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, userId);
             pstmt.setInt(2, eventId);
+            
+            // If ticketType is null, set it to the DB default 'Standard' 
+            // or explicitly set it here.
+            if (ticketType != null) {
+                pstmt.setString(3, ticketType);
+            } else {
+                pstmt.setString(3, "STANDARD");
+            }
+
             pstmt.executeUpdate();
-            System.out.println("User " + userId + " registered for event " + eventId);
+            System.out.println("User " + userId + " registered for event " + eventId + " with ticket: " + ticketType);
         } catch (SQLException e) {
             Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "Registration Failed", e);
         }
     }
-
-    // Pro-tip: Move your rs.get... logic into a private helper method 
-    // so both getAllEvents() and getEvents() can use it without repeating code.
-
 }

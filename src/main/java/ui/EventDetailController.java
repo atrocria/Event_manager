@@ -81,7 +81,7 @@ public class EventDetailController {
         
         if (currentUser != null && currentEvent != null) {
             // 2. This is where you'd use the DAO (assuming you add a register method)
-            eventDAO.registerUserForEvent(currentUser.getid(), currentEvent.getID());
+            eventDAO.registerUserForEvent(currentUser.getid(), currentEvent.getID(), null); //! add a ticket type selection later
             
             // You would typically call a RegistrationDAO here
             // For now, let's show a confirmation alert
