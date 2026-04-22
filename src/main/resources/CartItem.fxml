@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+
+<HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <VBox HBox.hgrow="ALWAYS">
+            <Label fx:id="lblEventTitle" style="-fx-font-weight: bold; -fx-font-size: 14;" text="Event Name" />
+            <Label fx:id="lblTicketType" text="Standard Ticket" textFill="#666666" />
+        </VBox>
+        <Label fx:id="lblDate" text="2026-05-12" />
+        <Button fx:id="btnRemove" text="Remove" style="-fx-background-color: #ff4444; -fx-text-fill: white;" />
+    </children>
+</HBox>

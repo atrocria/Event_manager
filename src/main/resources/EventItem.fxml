@@ -9,19 +9,19 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="600.0" style="-fx-background-radius: 50; -fx-background-color: #3a3a3a;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EventItemController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="92.0" prefWidth="875.0" style="-fx-background-radius: 50; -fx-background-color: #3a3a3a;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EventItemController">
    <children>
       <HBox prefHeight="75.0" prefWidth="559.0">
          <children>
-            <AnchorPane prefHeight="63.0" prefWidth="387.0">
+            <AnchorPane prefHeight="94.0" prefWidth="370.0">
                <children>
                   <Label fx:id="titleLabel" layoutX="5.0" layoutY="6.0" prefHeight="21.0" prefWidth="76.0" styleClass="card elevated" text="Card title" textFill="WHITE" />
-                  <Label fx:id="extraInfoLabel" layoutX="292.0" layoutY="24.0" prefHeight="17.0" prefWidth="78.0" text="extraInfoLabel" textFill="WHITE">
+                  <Label fx:id="extraInfoLabel" layoutX="295.0" layoutY="29.0" prefHeight="18.0" prefWidth="60.0" text="extraInfoLabel" textFill="WHITE">
                      <font>
                         <Font size="9.0" />
                      </font>
                   </Label>
-                  <Label fx:id="descriptionLabel" layoutX="6.0" layoutY="25.0" prefHeight="15.0" prefWidth="157.0" text="description" textFill="WHITE">
+                  <Label fx:id="descriptionLabel" layoutX="6.0" layoutY="25.0" prefHeight="15.0" prefWidth="278.0" text="description" textFill="WHITE">
                      <font>
                         <Font size="8.0" />
                      </font>
@@ -34,7 +34,7 @@
                   <Label fx:id="deadlineLabel" layoutX="300.0" layoutY="6.0" text="Deadline" textFill="WHITE" />
                </children>
             </AnchorPane>
-            <Region nodeOrientation="RIGHT_TO_LEFT" prefHeight="71.0" prefWidth="103.0" />
+            <Region nodeOrientation="RIGHT_TO_LEFT" prefHeight="75.0" prefWidth="399.0" />
             <VBox prefHeight="75.0" prefWidth="122.0">
                <children>
                   <Label fx:id="durationLabel" text="duration" textFill="WHITE" />

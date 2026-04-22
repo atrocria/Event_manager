@@ -9,20 +9,15 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="551.0" prefWidth="944.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EventPageController">
    <children>
-      <Label layoutX="15.0" layoutY="14.0" prefHeight="32.0" prefWidth="89.0" text="Events">
+      <Label layoutX="15.0" layoutY="14.0" prefHeight="32.0" prefWidth="89.0" text="Events" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="14.0">
          <font>
             <Font name="Consolas" size="25.0" />
          </font>
       </Label>
-      <TextField fx:id="searchField" layoutX="123.0" layoutY="16.0" prefHeight="26.0" prefWidth="647.0" promptText="Search for an event" style="-fx-background-radius: 15;" />
-      <ScrollPane layoutX="26.0" layoutY="66.0" prefHeight="475.0" prefWidth="625.0">
+      <TextField fx:id="searchField" layoutX="123.0" layoutY="16.0" prefHeight="26.0" prefWidth="647.0" promptText="Search for an event" style="-fx-background-radius: 15;" AnchorPane.leftAnchor="123.19999999999993" AnchorPane.rightAnchor="173.79999999999995" AnchorPane.topAnchor="16.0" />
+      <ScrollPane layoutX="26.0" layoutY="66.0" prefHeight="470.0" prefWidth="904.0" AnchorPane.bottomAnchor="14.600000000000023" AnchorPane.leftAnchor="25.600000000000023" AnchorPane.rightAnchor="14.0">
          <content>
-            <VBox fx:id="eventContainer" alignment="TOP_CENTER" prefHeight="473.0" prefWidth="622.0" />
-         </content>
-      </ScrollPane>
-      <ScrollPane layoutX="671.0" layoutY="66.0" prefHeight="475.0" prefWidth="250.0">
-         <content>
-            <VBox fx:id="eventContainer1" alignment="CENTER" prefHeight="474.0" prefWidth="249.0" />
+            <VBox fx:id="eventContainer" alignment="TOP_CENTER" prefHeight="467.0" prefWidth="888.0" />
          </content>
       </ScrollPane>
    </children>

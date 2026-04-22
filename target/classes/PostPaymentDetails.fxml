@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.PostPaymentDetailsController">
+   <children>
+      <Label layoutX="239.0" layoutY="207.0" text="Payment Successful" />
+      <Button fx:id="btnDone" layoutX="273.0" layoutY="263.0" mnemonicParsing="false" onAction="#handleReturnHome" text="Done" />
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="210.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@PaymentSuccess.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

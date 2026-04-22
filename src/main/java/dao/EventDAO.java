@@ -108,6 +108,23 @@ public class EventDAO {
         return events;
     }
 
+    public List<EventModel> getEventsByUserId(int userId) {
+        List<EventModel> events = new ArrayList<>();
+        String sql = "SELECT e.* FROM event e JOIN registration r ON e.event_id = r.event_id WHERE r.user_id = ?";
+
+        try (Connection conn = Database.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                events.add(mapResultSetToEvent(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return events;
+    }
+
     private EventModel mapResultSetToEvent(ResultSet rs) throws SQLException {
         String type = rs.getString("type");
         EventModel event;
@@ -220,28 +237,87 @@ public class EventDAO {
     }
 
     // from bookticket button, register user for event, insert into registration table
-    public void registerUserForEvent(int userId, int eventId, String ticketType) {
-        // We include ticket_type in the INSERT statement
-        String sql = "INSERT INTO registration (user_id, event_id, ticket_type) VALUES (?, ?, ?)";
-
+    public boolean isUserRegistered(int userId, int eventId) {
+        // Note: Using 'registration' to match your other method's table name
+        String sql = "SELECT COUNT(*) FROM registration WHERE user_id = ? AND event_id = ?";
+        
         try (Connection conn = Database.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, userId);
             pstmt.setInt(2, eventId);
             
-            // If ticketType is null, set it to the DB default 'Standard' 
-            // or explicitly set it here.
-            if (ticketType != null) {
-                pstmt.setString(3, ticketType);
-            } else {
-                pstmt.setString(3, "STANDARD");
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
             }
+        } catch (SQLException e) {
+            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "Check registration failed", e);
+        }
+        return false;
+    }
+
+    // Updated version of your existing method to include a safety check
+    public void registerUserForEvent(int userId, int eventId, String ticketType) {
+        // 1. Safety Check: Prevent duplicate entry error
+        if (isUserRegistered(userId, eventId)) {
+            System.out.println("User " + userId + " is already registered for event " + eventId);
+            return; // Exit early
+        }
+
+        String sql = "INSERT INTO registration (user_id, event_id, ticket_type) VALUES (?, ?, ?)";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, eventId);
+            pstmt.setString(3, (ticketType != null) ? ticketType : "STANDARD");
 
             pstmt.executeUpdate();
             System.out.println("User " + userId + " registered for event " + eventId + " with ticket: " + ticketType);
         } catch (SQLException e) {
             Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "Registration Failed", e);
+        }
+    }
+
+    public List<EventModel> getPaymentPendingUserID(int userId) {
+        List<EventModel> events = new ArrayList<>();
+        String sql = "SELECT e.* FROM event e " +
+                     "JOIN registration r ON e.event_id = r.event_id " +
+                     "WHERE r.user_id = ? AND r.payment_status = 'PENDING'";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                EventModel event = mapResultSetToEvent(rs);
+                events.add(event);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching pending payments for user " + userId);
+        }
+        return events;
+    }
+
+    public boolean completeUserPayment(int userId) {
+        // Looking at your phpMyAdmin screenshot, we target the 'registration' table
+        String sql = "UPDATE registration SET payment_status = 'PAID' WHERE user_id = ? AND payment_status = 'PENDING'";
+
+        try (Connection conn = Database.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, userId);
+            int rowsAffected = pstmt.executeUpdate();
+            
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

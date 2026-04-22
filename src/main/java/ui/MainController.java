@@ -27,64 +27,67 @@ public class MainController {
     @FXML private Button btnMyConcert;
     @FXML private Button btnMyKeynote;
     @FXML private Button btnAdminPanel;
+    @FXML private Button btnStaffPanel;
     @FXML private Button btnEventCreationPanel;
+    @FXML private Button btnArtistSpeakerPanel;
     
     @FXML private Label lblUserStatus;
     
     @FXML private ComboBox<UserRole> roleSelector;
+    private UserRole userActualRank;
     
     public void initialize() {
-        // make the window draggble
         setupDraggable();
-        UserModel currentUser = UserSession.getInstance().getUser();
 
+        // 2. Security Check: Redirect to login if session is empty
+        UserModel currentUser = UserSession.getInstance().getUser();
         if (currentUser == null) {
-            // Redirection must happen after the stage is fully initialized
             Platform.runLater(() -> {
                 try {
-                    // Get the stage from the contentArea
                     Stage stage = (Stage) contentArea.getScene().getWindow();
                     Parent loginRoot = FXMLLoader.load(getClass().getResource("/Login.fxml"));
                     stage.setScene(new Scene(loginRoot));
                     stage.show();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
             return;
         }
 
-        UserRole userActualRank = currentUser.getrole();
-        roleSelector.getItems().clear(); // clear existing items
+        // 3. THE "MAGIC" PART: Store this controller in the Stage's UserData.
+        // This allows Cart/Checkout controllers to call main.loadView() via a lambda lookup.
+        Platform.runLater(() -> {
+            if (contentArea.getScene() != null && contentArea.getScene().getWindow() != null) {
+                contentArea.getScene().getWindow().setUserData(this);
+                System.out.println("MainController successfully stored in Stage UserData.");
+            }
+        });
 
-        // Fill the selector only with roles EQUAL or LOWER than their actual rank
+        // 4. Role & Permissions Logic
+        userActualRank = currentUser.getrole(); 
+        roleSelector.getItems().clear(); 
+
+        // Fill the selector with allowed roles based on rank
         for (UserRole role : UserRole.values()) {
             if (userActualRank.getLevel() >= role.getLevel()) {
                 roleSelector.getItems().add(role);
             }
         }
 
-        // Default the dropdown to highest available role
+        // Set the initial value and apply initial UI permissions
         roleSelector.setValue(userActualRank);
-
-        //! add this into event creator tab
-        // Use the Service to check permission
-        // btnCreateEvent.setVisible(PermissionService.canCreateEvent(currentRole));
-        applyPermissionsBttn(userActualRank); //whether need show admin controls
-
-        // Only show roles EQUAL TO or LOWER than the user's actual rank
-        for (UserRole role : UserRole.values()) {
-            if (currentUser.getrole().getLevel() >= role.getLevel()) {
-                roleSelector.getItems().add(role);
-            }
+        if (btnAdminPanel != null) {
+            applyPermissions(userActualRank);
         }
 
-        // Default the dropdown to their highest role
-        roleSelector.setValue(currentUser.getrole());
-
-        // Listener: When they change the dropdown, update the UI permissions
+        // Handle Role Switching via ComboBox
         roleSelector.setOnAction(e -> {
-            applyPermissions(roleSelector.getValue());
+            UserRole selectedRole = roleSelector.getValue();
+            if (selectedRole != null) {
+                UserSession.getInstance().getUser().setRole(selectedRole);
+                applyPermissions(selectedRole);
+            }
         });
     }
 
@@ -106,14 +109,6 @@ public class MainController {
             stage.setX(event.getScreenX() - xOffset);
             stage.setY(event.getScreenY() - yOffset);
         });
-    }
-        
-    private void applyPermissions(UserRole selectedRole) {
-        // Example: Hide the "Create Event" button if they switch to 'Attendee' view
-        btnCreateEvent.setVisible(selectedRole.getLevel() >= 80);
-        
-        // Example: Only show "Speaker Bio" button if in Speaker view
-        btnMySessions.setVisible(selectedRole == UserRole.SPEAKER);
     }
 
     // dashboard, cart, etc..
@@ -193,18 +188,56 @@ public class MainController {
         }
     }
     @FXML
+    private void handleStaffButton(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Staff.fxml"));
+            
+            // 1. Load the FXML first (this instantiates the controller)
+            Parent root = loader.load(); 
+            
+            // 2. NOW get the controller
+            StaffPageController pageController = loader.getController();
+            
+            // 3. Set the reference
+            if (pageController != null) {
+                pageController.setMainController(this); 
+            }
+
+            contentArea.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace(); // Use printStackTrace to see exactly what failed
+        }
+    }
+    @FXML
     private void handleCreateEventButton(ActionEvent event) {
         loadView("/CreateEvent.fxml");
+    }
+    @FXML
+    private void handleArtistSpeakerButton(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ArtistSpeaker.fxml"));
+            
+            // 1. Load the FXML first (this instantiates the controller)
+            Parent root = loader.load(); 
+            
+            // 2. NOW get the controller
+            ArtistSpeakerController pageController = loader.getController();
+            
+            // 3. Set the reference
+            if (pageController != null) {
+                pageController.setMainController(this); 
+            }
+
+            contentArea.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace(); // Use printStackTrace to see exactly what failed
+        }
     }
 
     // bottom
     @FXML
     private void handleProfileButton(ActionEvent event) {
         loadView("/Profile.fxml");
-    }
-    @FXML
-    private void handleSettingsButton(ActionEvent event) {
-        loadView("/Settings.fxml");
     }
 
     // put new frame into the anchorpane and delete the current one
@@ -244,12 +277,13 @@ public class MainController {
 
     public void showDetailedView(EventModel event) {
         try {
+            UserModel currentUser = UserSession.getInstance().getUser();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/EventDetail.fxml"));
             Parent detailView = loader.load();
 
             // Pass the event data to the Detail Controller
             EventDetailController controller = loader.getController();
-            controller.initializeDetails(event);
+            controller.initializeDetails(event, currentUser.getrole());
 
             // Clear area and show the page
             contentArea.getChildren().clear();
@@ -267,9 +301,10 @@ public class MainController {
     }
     
     // only admins and staff can view these buttons >=80 permission level
-    private void applyPermissionsBttn(UserRole selectedRole) {
+    private void applyPermissions(UserRole selectedRole) {
         btnAdminPanel.setVisible(selectedRole == UserRole.ADMIN);
         btnEventCreationPanel.setVisible(selectedRole.getLevel() >= 60);
+        btnArtistSpeakerPanel.setVisible(selectedRole.getLevel() >= 40);
 
         // If a user was on the Admin Panel but switched to "Attendee" view,
         // kick them back to the Dashboard

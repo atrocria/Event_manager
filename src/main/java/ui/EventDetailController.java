@@ -2,6 +2,7 @@ package ui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import model.ConcertEvent;
@@ -28,14 +29,29 @@ public class EventDetailController {
     @FXML private Label eligibilityLabel;
     @FXML private Button bookTicketButton;
     @FXML private Button checkoutNowButton;
+    
+    @FXML private ComboBox<String> ticketTypeComboBox;
+    @FXML private ComboBox<String> numberOfTicketsComboBox;
 
     private EventModel currentEvent;
     private final EventDAO eventDAO = new EventDAO();
 
-    public void initializeDetails(EventModel event) {
+    public void initializeDetails(EventModel event, UserRole userRole) {
         this.currentEvent = event;
         populateDetails();
-        adminControlsVisibility();
+        adminControlsVisibility(userRole);
+
+        UserModel currentUser = UserSession.getInstance().getUser();
+        EventDAO eventDAO = new EventDAO();
+
+        // If already registered, disable the button so they can't click it again
+        if (eventDAO.isUserRegistered(currentUser.getid(), event.getID())) {
+            bookTicketButton.setDisable(true);
+            bookTicketButton.setText("Already Registered");
+
+            checkoutNowButton.setDisable(true);
+            checkoutNowButton.setText("Already Registered");
+        }
     }
 
     private void populateDetails() {
@@ -59,6 +75,9 @@ public class EventDetailController {
             specialInfoLabel.setText("Performer / Artist");
             dynamicDetailsLabel.setText(((ConcertEvent) currentEvent).getArtistName());
 
+            ticketTypeComboBox.setVisible(true);
+            numberOfTicketsComboBox.setVisible(true);
+            
             //eligible for early bird discount or VIP
             eligibilityLabel.setVisible(true);;
             if (((ConcertEvent) currentEvent).isEarlyBirdEligible()) {
@@ -73,6 +92,9 @@ public class EventDetailController {
             dynamicDetailsLabel.setText(conf.getKeynoteSpeaker() + " - " + conf.getResearchTopic());
             eligibilityLabel.setText("");
             eligibilityLabel.setVisible(false);;
+
+            ticketTypeComboBox.setVisible(false);
+            numberOfTicketsComboBox.setVisible(false);
             
         } else if (currentEvent instanceof WorkshopEvent) {
             specialInfoLabel.setText("Materials Needed");
@@ -80,11 +102,16 @@ public class EventDetailController {
             eligibilityLabel.setText("");
             eligibilityLabel.setVisible(false);;
             
+            ticketTypeComboBox.setVisible(false);
+            numberOfTicketsComboBox.setVisible(false);
         } else {
             specialInfoLabel.setText("Additional Info");
             dynamicDetailsLabel.setText("No specific details available.");
             eligibilityLabel.setText("");
             eligibilityLabel.setVisible(false);;
+
+            ticketTypeComboBox.setVisible(false);
+            numberOfTicketsComboBox.setVisible(false);
         }
     }
 

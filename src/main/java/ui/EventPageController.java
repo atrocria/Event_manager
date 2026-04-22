@@ -50,7 +50,10 @@ public class EventPageController {
 
     // Modify your existing method to handle the EventModel list
     public void loadEventsFromDatabase(String searchQuery) {
+        eventContainer.setFillWidth(true);
         eventContainer.getChildren().clear(); 
+        eventContainer.setSpacing(8); 
+        eventContainer.setPadding(new javafx.geometry.Insets(10));
         
         EventDAO dao = new EventDAO();
         List<EventModel> events = (searchQuery == null || searchQuery.isEmpty()) 
@@ -62,6 +65,7 @@ public class EventPageController {
                 // 1. Load the FXML for the individual card
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/EventItem.fxml"));
                 VBox card = loader.load();
+                card.setMaxWidth(Double.MAX_VALUE);
 
                 // 2. Get the controller attached to that card
                 EventItemController controller = loader.getController();

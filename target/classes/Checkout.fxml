@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.CheckoutController">
+   <children>
+      <HBox spacing="40.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="40.0">
+         <children>
+            <VBox spacing="15.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Secure Checkout">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Text>
+                  
+                  <Label text="Cardholder Name" />
+                  <TextField fx:id="txtName" promptText="John Doe" />
+
+                  <Label text="Card Number" />
+                  <TextField fx:id="txtCardNumber" promptText="1234 5678 9101 1121" />
+
+                  <HBox spacing="15.0">
+                     <children>
+                        <VBox HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Expiry Date" />
+                              <TextField fx:id="txtExpiry" promptText="MM/YY" />
+                           </children>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="CVV" />
+                              <PasswordField fx:id="txtCVV" promptText="123" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  
+                  <Region VBox.vgrow="ALWAYS" />
+                  
+                  <Button fx:id="btnPay" maxWidth="Infinity" onAction="#handleProcessPayment" prefHeight="45.0" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold;" text="COMPLETE PURCHASE" />
+               </children>
+            </VBox>
+
+            <VBox prefWidth="250.0" spacing="10.0" style="-fx-padding: 20; -fx-background-radius: 10;">
+               <children>
+                  <Text text="Order Summary" style="-fx-font-weight: bold; -fx-font-size: 16;" />
+                  <Separator />
+                  <HBox>
+                     <Label text="Items Total" />
+                     <Region HBox.hgrow="ALWAYS" />
+                     <Label text="Calculated..." />
+                  </HBox>
+                  <HBox>
+                     <Label text="Service Fee" />
+                     <Region HBox.hgrow="ALWAYS" />
+                     <Label text="FREE" textFill="#2ecc71" />
+                  </HBox>
+                  <Separator />
+                  <HBox>
+                     <Label text="Total" style="-fx-font-weight: bold;" />
+                     <Region HBox.hgrow="ALWAYS" />
+                     <Label text="Confirmed at next step" style="-fx-font-weight: bold;" />
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
