@@ -37,7 +37,7 @@ public class EventItemController {
         descriptionLabel.setText(event.getDescription());
         dateLabel.setText(event.getDate());
         deadlineLabel.setText(event.getRegistrationDeadLine());
-        attendeesCountLabel.setText(String.valueOf(event.getAttendeesCount()));
+        attendeesCountLabel.setText(String.valueOf(event.getAttendeesCount()) + " / " + String.valueOf(event.getMax_attendees()) + " attendees");
         durationLabel.setText(String.valueOf(event.getDurationMin()));
         // typeBadge.setText(event.getClass().getSimpleName().replace("Event", ""));
 
