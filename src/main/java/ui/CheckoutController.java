@@ -30,25 +30,6 @@ public class CheckoutController {
         });
     }
 
-    private boolean isFormInvalid() {
-        String errorMsg = "";
-
-        if (txtName.getText().isEmpty()) errorMsg += "Cardholder name is required.\n";
-        if (txtCardNumber.getText().length() < 16) errorMsg += "Card number must be 16 digits.\n";
-        if (!txtExpiry.getText().matches("(0[1-9]|1[0-2])/[0-9]{2}")) errorMsg += "Expiry must be MM/YY.\n";
-        if (txtCVV.getText().length() < 3) errorMsg += "CVV must be 3 digits.\n";
-
-        if (!errorMsg.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Payment Error");
-            alert.setHeaderText("Please correct the following fields:");
-            alert.setContentText(errorMsg);
-            alert.showAndWait();
-            return true;
-        }
-        return false;
-    }
-
     @FXML
     private void handleProcessPayment() {
         // 1. Validation

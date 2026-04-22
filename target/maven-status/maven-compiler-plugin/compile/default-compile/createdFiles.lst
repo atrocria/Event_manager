@@ -1,4 +1,5 @@
 dao\EventDAO.class
+model\AttendeeView.class
 ui\PostPaymentDetailsController.class
 service\PermissionService.class
 dao\UserDao.class
@@ -18,6 +19,7 @@ ui\RegistrationController.class
 ui\CartController.class
 ui\CheckoutController.class
 model\ConferenceEvent.class
+ui\StaffPageController$2.class
 ui\AdminEventItemController.class
 ui\EventPageController.class
 ui\MainController.class
@@ -28,6 +30,7 @@ ui\AdminPageController$AdminView.class
 ui\EventItemController.class
 model\GenreModel.class
 ui\LoginController.class
+ui\StaffPageController$1.class
 model\EventModel.class
 model\WorkshopEvent.class
 ui\AdminUserItemController$1.class

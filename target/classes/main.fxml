@@ -35,7 +35,7 @@
             <Button mnemonicParsing="false" onAction="#handleCartButton" text="Cart" />
             <Button fx:id="btnArtistSpeakerPanel" mnemonicParsing="false" onAction="#handleArtistSpeakerButton" text="ArtistSpeaker" />
             <Button fx:id="btnEventCreationPanel" mnemonicParsing="false" onAction="#handleCreateEventButton" text="CEvent" />
-            <Button fx:id="btnStaffPanel" mnemonicParsing="false" text="Staff" />
+            <Button fx:id="btnStaffPanel" mnemonicParsing="false" onAction="#handleStaffButton" text="Staff" />
             <Button fx:id="btnAdminPanel" mnemonicParsing="false" onAction="#handleAdminButton" text="Admin" />
             <Region prefHeight="275.0" prefWidth="54.0" VBox.vgrow="ALWAYS" />
             <Button mnemonicParsing="false" text="profile" />

@@ -1,59 +1,134 @@
 package ui;
 
 import dao.EventDAO;
-import dao.UserDao; // Assuming you have a UserDAO
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import model.AttendeeView;
+import model.UserModel;
 import model.UserRole;
-import utils.UserSession;
 
 public class StaffPageController {
 
-    @FXML private TableView<Object> tblAttendance; // Simplified for example
-    @FXML private TableView<Object> tblUsers;
-    
-    private EventDAO eventDAO = new EventDAO();
-    private UserDao userDAO = new UserDao();
+    // Attendee Check-in Tab
+    @FXML
+    private TextField txtSearchAttendee;
+    @FXML
+    private TableView<AttendeeView> tblAttendance;
+    @FXML
+    private TableColumn<AttendeeView, String> colUser;
+    @FXML
+    private TableColumn<AttendeeView, String> colEvent;
+    @FXML
+    private TableColumn<AttendeeView, String> colStatus;
+    @FXML
+    private TableColumn<AttendeeView, Void> colAction;
+
+    // Permissions Tab
+    @FXML private TableView<UserModel> tblUsers;
+    @FXML private TableColumn<UserModel, String> colUserName;
+    @FXML private TableColumn<UserModel, UserRole> colCurrentRole;
+    @FXML private TableColumn<UserModel, Void> colRoleAction;
+    @FXML private TableColumn<AttendeeView, String> colPaymentStatus;
+
+    private final EventDAO eventDAO = new EventDAO();
+    private ObservableList<AttendeeView> attendeeData = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
+        setupAttendanceTable();
+        setupPermissionsTable();
         loadAttendeeData();
-        loadUserData();
+        // loadUserData(); // You'll need a method in DAO to get all users
+    }
+
+    private void setupAttendanceTable() {
+        colUser.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        colEvent.setCellValueFactory(new PropertyValueFactory<>("eventTitle"));
+        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colPaymentStatus.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
+
+        // Create the "Check-In" Button in the column
+        colAction.setCellFactory(param -> new TableCell<AttendeeView, Void>() {
+            private final Button btn = new Button("Check-In");
+            {
+                btn.setOnAction(event -> {
+                    AttendeeView data = getTableView().getItems().get(getIndex());
+                    handleCheckIn(data);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    AttendeeView data = getTableView().getItems().get(getIndex());
+                    btn.setDisable("CHECKED_IN".equals(data.getStatus()));
+                    setGraphic(btn);
+                }
+            }
+        });
+
+        // Search Filter Logic
+        FilteredList<AttendeeView> filteredData = new FilteredList<>(attendeeData, p -> true);
+        txtSearchAttendee.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(attendee -> {
+                if (newValue == null || newValue.isEmpty())
+                    return true;
+                String lowerCaseFilter = newValue.toLowerCase();
+                return attendee.getUserName().toLowerCase().contains(lowerCaseFilter) ||
+                        attendee.getEventTitle().toLowerCase().contains(lowerCaseFilter);
+            });
+        });
+        tblAttendance.setItems(filteredData);
     }
 
     @FXML
     private void loadAttendeeData() {
-        // Here you would fetch registrations where payment_status = 'PAID' 
-        // and attendance_status = 'PENDING'
-        System.out.println("Loading PAID registrations for check-in...");
+        attendeeData.clear();
+        attendeeData.addAll(eventDAO.getPendingCheckIns());
     }
 
-    private void loadUserData() {
-        System.out.println("Loading users with role levels lower than Staff...");
-    }
-
-    // Logic for the 'Check-in' button in the table
-    private void handleCheckIn(int registrationId) {
-        // String sql = "UPDATE registration SET attendance_status = 'CHECKED_IN' WHERE registration_id = ?"
-        boolean success = eventDAO.updateAttendance(registrationId, "CHECKED_IN");
-        if (success) loadAttendeeData();
-    }
-
-    // Logic for updating roles
-    private void handleRoleChange(int userId, UserRole newRole) {
-        UserRole staffRole = UserSession.getInstance().getUser().getrole();
-        
-        // SECURITY: Staff can only promote/demote to roles BELOW Staff level
-        if (newRole.getLevel() < staffRole.getLevel()) {
-            userDAO.updateUserRole(userId, newRole);
-            System.out.println("User role updated successfully.");
-        } else {
-            System.err.println("Permission Denied: Staff cannot assign Staff or Admin roles.");
+    private void handleCheckIn(AttendeeView attendee) {
+        boolean success = eventDAO.updateAttendance(attendee.getRegistrationId(), "CHECKED_IN");
+        if (success) {
+            loadAttendeeData(); // Refresh table
+            System.out.println("Check-in successful for: " + attendee.getUserName());
         }
     }
 
-    private void setmainController(MainController mainController) {
-        // This method can be used to call back to the main controller if needed
-        mainController.setStaffController(this);
+    private void setupPermissionsTable() {
+        colUserName.setCellValueFactory(new PropertyValueFactory<>("email"));
+        colCurrentRole.setCellValueFactory(new PropertyValueFactory<>("role"));
+
+        colRoleAction.setCellFactory(param -> new TableCell<UserModel, Void>() {
+            private final ComboBox<UserRole> roleCombo = new ComboBox<>(
+                    FXCollections.observableArrayList(UserRole.values()));
+            private final Button updateBtn = new Button("Update");
+            private final HBox container = new HBox(5, roleCombo, updateBtn);
+
+            {
+                updateBtn.setOnAction(event -> {
+                    UserModel user = getTableView().getItems().get(getIndex());
+                    UserRole newRole = roleCombo.getValue();
+                    if (newRole != null) {
+                        eventDAO.updateUserRole(user.getid(), newRole);
+                        // Refresh data here
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : container);
+            }
+        });
     }
 }

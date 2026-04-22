@@ -197,16 +197,7 @@ public class MainController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Staff.fxml"));
             
-            // 1. Load the FXML first (this instantiates the controller)
             Parent root = loader.load(); 
-            
-            // 2. NOW get the controller
-            StaffPageController pageController = loader.getController();
-            
-            // 3. Set the reference
-            if (pageController != null) {
-                pageController.setMainController(this); 
-            }
 
             contentArea.getChildren().setAll(root);
         } catch (IOException e) {
@@ -222,17 +213,7 @@ public class MainController {
         currentViewPath = "/ArtistSpeaker.fxml";
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ArtistSpeaker.fxml"));
-            
-            // 1. Load the FXML first (this instantiates the controller)
             Parent root = loader.load(); 
-            
-            // 2. NOW get the controller
-            ArtistSpeakerController pageController = loader.getController();
-            
-            // 3. Set the reference
-            if (pageController != null) {
-                pageController.setMainController(this); 
-            }
 
             contentArea.getChildren().setAll(root);
         } catch (IOException e) {

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.*;
 
+import model.AttendeeView;
 import model.ConcertEvent;
 import model.ConferenceEvent;
 import model.WorkshopEvent;
@@ -32,61 +34,58 @@ public class EventDAO {
     public void addEvent(EventModel event) {
         UserModel user = UserSession.getInstance().getUser();
 
-        // Security Check
         if (user == null || user.getrole().getLevel() < 60) {
             System.err.println("SECURITY ALERT: Unauthorized attempt to add event.");
             return;
         }
 
-        // This SQL covers the core columns from your DB image
         String sql = "INSERT INTO event (title, description, event_date, start_time, venue_id, " +
-                "organizer_id, max_attendees, registration_deadline, status, type, " +
-                "performer, research_topic, keynote_speaker, material_list, duration_min) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "organizer_id, max_attendees, registration_deadline, status, type, " +
+                    "performer, research_topic, keynote_speaker, material_list, duration_min) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Database.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            // 1. Common Fields
+            // 1-10: Standard Fields
             pstmt.setString(1, event.getTitle());
             pstmt.setString(2, event.getDescription());
-            pstmt.setString(3, event.getDate()); // event_date
-
-            // Convert LocalDateTime to SQL Time for the 'start_time' column
+            pstmt.setString(3, event.getDate());
+            
             if (event.getStartTime() != null) {
                 pstmt.setTime(4, java.sql.Time.valueOf(event.getStartTime().toLocalTime()));
             } else {
-                pstmt.setNull(4, java.sql.Types.TIME);
+                System.err.println("❌ Error: Start Time is required to save an event.");
             }
 
             pstmt.setInt(5, event.getVenue());
             pstmt.setInt(6, event.getOrganizer());
             pstmt.setInt(7, event.getMax_attendees());
-            pstmt.setString(8, event.getRegistrationDeadLine());
+            pstmt.setString(8, event.getRegistrationDeadLine() != null ? event.getRegistrationDeadLine() : event.getDate());
             pstmt.setString(9, event.getStatus());
             pstmt.setString(10, event.getType());
 
-            // Set everything to null by default
+            // 11-15: Specific Subclass Fields (Null-safe)
             pstmt.setNull(11, java.sql.Types.VARCHAR); // performer
             pstmt.setNull(12, java.sql.Types.VARCHAR); // research_topic
             pstmt.setNull(13, java.sql.Types.VARCHAR); // keynote_speaker
+            pstmt.setNull(14, java.sql.Types.VARCHAR); // material_list
+            pstmt.setInt(15, event.getDurationMin() > 0 ? event.getDurationMin() : 60); // duration_min
 
-            // Fill in based on instance type
             if (event instanceof ConcertEvent) {
                 pstmt.setString(11, ((ConcertEvent) event).getArtistName());
             } else if (event instanceof ConferenceEvent) {
                 pstmt.setString(12, ((ConferenceEvent) event).getResearchTopic());
                 pstmt.setString(13, ((ConferenceEvent) event).getKeynoteSpeaker());
             } else if (event instanceof WorkshopEvent) {
-                // Assuming Workshop model
                 pstmt.setString(14, ((WorkshopEvent) event).getMaterialList());
             }
 
             pstmt.executeUpdate();
-            System.out.println("Event successfully saved: " + event.getTitle());
+            System.out.println("✅ Event successfully saved: " + event.getTitle());
 
         } catch (SQLException e) {
-            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "Failed to save event!", e);
+            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "❌ SQL Error: Failed to save event!", e);
         }
     }
 
@@ -133,8 +132,7 @@ public class EventDAO {
         if ("CONCERT".equalsIgnoreCase(type)) {
             ConcertEvent ce = new ConcertEvent();
             ce.setArtistName(rs.getString("performer"));
-            //! Genre is stored as a type or string?, convert to GenreModel
-            //! ce.setGenre(GenreModel.valueOf(rs.getString("genre")));
+            // ce.setGenre(GenreModel.valueOf(rs.getString("genre")));
             event = ce;
         } else if ("CONFERENCE".equalsIgnoreCase(type)) {
             ConferenceEvent cfe = new ConferenceEvent();
@@ -162,6 +160,12 @@ public class EventDAO {
             LocalDate datePart = rs.getDate("event_date").toLocalDate();
             LocalTime timePart = rs.getTime("start_time").toLocalTime();
             event.setStartTime(LocalDateTime.of(datePart, timePart));
+        }
+
+        Timestamp createdAt = rs.getTimestamp("created_at");
+        if (createdAt != null) {
+            // Assuming your setter is named setDatePosted
+            event.setCreationTime(createdAt.toLocalDateTime());
         }
 
         event.setOrganizer(rs.getInt("organizer_id"));
@@ -198,7 +202,7 @@ public class EventDAO {
                     rs.getString("name"),
                     rs.getString("email"),
                     UserRole.valueOf(rs.getString("role").toUpperCase()), // Convert DB string to Enum
-                    rs.getTimestamp("created_at").toLocalDateTime() // Convert Timestamp to LocalDateTime
+                    rs.getTimestamp("created_at").toLocalDateTime()
                 );
                 attendees.add(user);
             }
@@ -269,8 +273,8 @@ public class EventDAO {
         String sql = "INSERT INTO registration (user_id, event_id, ticket_type) VALUES (?, ?, ?)";
 
         try (Connection conn = Database.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setInt(1, userId);
             pstmt.setInt(2, eventId);
             pstmt.setString(3, (ticketType != null) ? ticketType : "STANDARD");
@@ -282,24 +286,111 @@ public class EventDAO {
         }
     }
 
-    public List<EventModel> getPaymentPendingUserID(int userId) {
-        List<EventModel> events = new ArrayList<>();
-        String sql = "SELECT e.* FROM event e " +
-                     "JOIN registration r ON e.event_id = r.event_id " +
-                     "WHERE r.user_id = ? AND r.payment_status = 'PENDING'";
+    // Fetch list of people who PAID but haven't CHECKED_IN
+    public List<AttendeeView> getPendingCheckIns() {
+        List<AttendeeView> list = new ArrayList<>();
+        // Added r.payment_status to the SELECT
+        String sql = "SELECT r.registration_id, u.name, e.title, r.attendance_status, r.payment_status " +
+                "FROM registration r " +
+                "JOIN user u ON r.user_id = u.user_id " +
+                "JOIN event e ON r.event_id = e.event_id";
 
         try (Connection conn = Database.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(new AttendeeView(
+                        rs.getInt("registration_id"),
+                        rs.getString("name"),
+                        rs.getString("title"),
+                        rs.getString("attendance_status"),
+                        rs.getString("payment_status") // Pass it to constructor
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // THIS UPDATES THE TABLE FROM YOUR IMAGE
+    public boolean updateAttendance(int registrationId, String status) {
+        String sql = "UPDATE registration SET attendance_status = ? WHERE registration_id = ?";
+
+        try (Connection conn = Database.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, status);
+            pstmt.setInt(2, registrationId);
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // THIS GETS PEOPLE WHO PAID FOR YOUR STAFF TO SEE
+    // We return a List of String arrays since you don't have a RegistrationModel
+    public List<String[]> getStaffCheckInList() {
+        List<String[]> list = new ArrayList<>();
+        String sql = "SELECT r.registration_id, u.name, e.title, r.attendance_status " +
+                "FROM registration r " +
+                "JOIN user u ON r.user_id = u.user_id " +
+                "JOIN event e ON r.event_id = e.event_id " +
+                "WHERE r.payment_status = 'PAID'";
+
+        try (Connection conn = Database.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(new String[] {
+                        String.valueOf(rs.getInt("registration_id")),
+                        rs.getString("name"),
+                        rs.getString("title"),
+                        rs.getString("attendance_status")
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public void updateUserRole(int userId, UserRole newRole) {
+        String sql = "UPDATE user SET role = ? WHERE user_id = ?";
+        try (Connection conn = Database.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, newRole.name()); // Sets role to 'STAFF', 'ADMIN', etc.
+            pstmt.setInt(2, userId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<EventModel> getEventsWithPendingPayment(int userId) {
+        List<EventModel> events = new ArrayList<>();
+        // We join the event table with registration to get the event details
+        String sql = "SELECT e.* FROM event e " +
+                "JOIN registration r ON e.event_id = r.event_id " +
+                "WHERE r.user_id = ? AND r.payment_status = 'PENDING'";
+
+        try (Connection conn = Database.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                EventModel event = mapResultSetToEvent(rs);
-                events.add(event);
+                // Use your existing mapping helper to turn the DB row into an object
+                events.add(mapResultSetToEvent(rs));
             }
         } catch (SQLException e) {
-            System.err.println("Error fetching pending payments for user " + userId);
+            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "Failed to fetch cart items", e);
         }
         return events;
     }

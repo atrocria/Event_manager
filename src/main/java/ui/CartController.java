@@ -27,7 +27,7 @@ public class CartController {
         int userId = UserSession.getInstance().getUser().getid();
         
         // You'll need a method in EventDAO that returns events for a specific user
-        List<EventModel> paymentPendingEvents = eventDAO.getPaymentPendingUserID(userId);
+        List<EventModel> paymentPendingEvents = eventDAO.getEventsWithPendingPayment(userId);
 
         for (EventModel event : paymentPendingEvents) {
             try {

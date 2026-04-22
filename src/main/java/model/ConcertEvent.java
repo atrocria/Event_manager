@@ -74,10 +74,15 @@ public class ConcertEvent extends EventModel {
     // }
     
     public boolean isEarlyBirdEligible() {
+
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime eventDate = getStartTime();
         LocalDateTime datePosted = getCreationTime();
         
+        if (datePosted == null) {
+            return false;
+        }
+
         // must be within 5 days of the event being posted
         boolean withinFiveDaysOfPosting = now.isBefore(datePosted.plusDays(5));
         
