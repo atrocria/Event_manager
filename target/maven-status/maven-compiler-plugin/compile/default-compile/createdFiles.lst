@@ -23,6 +23,7 @@ ui\EventPageController.class
 ui\MainController.class
 ui\DashboardController.class
 module-info.class
+ui\StaffPageController.class
 ui\AdminPageController$AdminView.class
 ui\EventItemController.class
 model\GenreModel.class

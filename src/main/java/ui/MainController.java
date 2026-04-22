@@ -89,6 +89,8 @@ public class MainController {
                 applyPermissions(selectedRole);
             }
         });
+
+        handleDashboardButton(null);
     }
 
     // Add these variables at the top of your class
@@ -143,6 +145,7 @@ public class MainController {
     }
     @FXML
     private void handleEventPageButton(ActionEvent event) {
+        currentViewPath = "/EventPage.fxml";
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/EventPage.fxml"));
             
@@ -168,6 +171,7 @@ public class MainController {
     }
     @FXML
     private void handleAdminButton(ActionEvent event) {
+        currentViewPath = "/AdminPanel.fxml";
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin.fxml"));
             
@@ -189,6 +193,7 @@ public class MainController {
     }
     @FXML
     private void handleStaffButton(ActionEvent event) {
+        currentViewPath = "/StaffPanel.fxml";
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Staff.fxml"));
             
@@ -214,6 +219,7 @@ public class MainController {
     }
     @FXML
     private void handleArtistSpeakerButton(ActionEvent event) {
+        currentViewPath = "/ArtistSpeaker.fxml";
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ArtistSpeaker.fxml"));
             
@@ -303,6 +309,7 @@ public class MainController {
     // only admins and staff can view these buttons >=80 permission level
     private void applyPermissions(UserRole selectedRole) {
         btnAdminPanel.setVisible(selectedRole == UserRole.ADMIN);
+        btnStaffPanel.setVisible(selectedRole.getLevel() >= 80);
         btnEventCreationPanel.setVisible(selectedRole.getLevel() >= 60);
         btnArtistSpeakerPanel.setVisible(selectedRole.getLevel() >= 40);
 

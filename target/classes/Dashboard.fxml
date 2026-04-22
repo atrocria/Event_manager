@@ -1,20 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.DashboardController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.DashboardController">
    <children>
-      <Label layoutX="10.0" layoutY="6.0" text="Dashboard">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <VBox layoutX="13.0" layoutY="51.0" prefHeight="301.0" prefWidth="242.0">
+      <VBox spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
-            <Label text="Event Participated" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dashboard Overview">
+               <font>
+                  <Font name="System Bold" size="28.0" />
+               </font>
+            </Text>
+            
+            <HBox spacing="20.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #2d2d2d; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                     <children>
+                        <Label text="Total Events" textFill="#7f8c8d" />
+                        <Label fx:id="lblTotalEvents" text="0" style="-fx-font-size: 24; -fx-font-weight: bold;" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #2d2d2d; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                     <children>
+                        <Label text="My Registrations" textFill="#7f8c8d" />
+                        <Label fx:id="lblMyRegistrations" text="0" style="-fx-font-size: 24; -fx-font-weight: bold;" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #2d2d2d; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                     <children>
+                        <Label text="Role Level" textFill="#7f8c8d" />
+                        <Label fx:id="lblRoleLevel" text="-" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #3498db;" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+
+            <Separator prefWidth="200.0" />
+
+            <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <Text text="Recent Activity" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+                  <TableView fx:id="tblRecentActivity" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                    <columns>
+                      <TableColumn fx:id="colEvent" prefWidth="300.0" text="Event" />
+                      <TableColumn fx:id="colDate" prefWidth="150.0" text="Date" />
+                      <TableColumn fx:id="colStatus" prefWidth="150.0" text="Status" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
          </children>
       </VBox>
    </children>
