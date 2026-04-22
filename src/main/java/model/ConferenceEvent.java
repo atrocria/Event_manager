@@ -12,7 +12,7 @@ public class ConferenceEvent extends EventModel {
     public ConferenceEvent() {}
 
     public ConferenceEvent(int id, String title, String description, int venue, String date, LocalDateTime startTime,
-            String organizer, int durationMin, String registrationDeadLine, int max_attendees, String status,
+            int organizer, int durationMin, String registrationDeadLine, int max_attendees, String status,
             LocalDateTime creationTime, String type, List<UserModel> attendees, List<String> sessions, String researchTopic, String keynoteSpeaker, String speakerBio) {
         super(id, title, description, venue, date, startTime, organizer, durationMin, registrationDeadLine, max_attendees, status, creationTime, type, attendees);
         this.sessions = sessions;

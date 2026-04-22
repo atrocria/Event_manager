@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
@@ -14,11 +15,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" prefHeight="869.0" prefWidth="998.0" style=";" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EventDetailController">
+<ScrollPane fitToWidth="true" prefHeight="1068.0" prefWidth="998.0" style=";" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EventDetailController">
    <content>
-      <AnchorPane>
+      <AnchorPane prefHeight="1069.0" prefWidth="982.0">
          <children>
-            <VBox layoutY="6.0" spacing="20.0" AnchorPane.bottomAnchor="-5.2000000000000455" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="6.0">
+            <VBox layoutY="6.0" prefHeight="1066.0" prefWidth="982.0" spacing="20.0" AnchorPane.bottomAnchor="-200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="6.0">
                <padding>
                   <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
                </padding>
@@ -71,6 +72,8 @@
                         <Label fx:id="dynamicDetailsLabel" text="Details based on event type..." textFill="WHITE" wrapText="true" />
                      </children>
                   </VBox>
+                  <ComboBox prefHeight="30.0" prefWidth="154.0" promptText="Select Ticket type" />
+                  <ComboBox prefHeight="30.0" prefWidth="165.0" promptText="Select No. of seats" />
                   <Label fx:id="eligibilityLabel" text="eligibilityLabel" textFill="LIME">
                      <VBox.margin>
                         <Insets left="15.0" />
@@ -78,6 +81,11 @@
                   </Label>
 
                   <Button fx:id="bookTicketButton" mnemonicParsing="false" prefHeight="45.0" prefWidth="200.0" style="-fx-background-color: #00ffcc; -fx-background-radius: 25; -fx-text-fill: #2b2b2b;" text="Book Ticket">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="checkoutNowButton" mnemonicParsing="false" prefHeight="45.0" prefWidth="200.0" style="-fx-background-color: #00ffcc; -fx-background-radius: 25; -fx-text-fill: #2b2b2b;" text="Checkout now">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>

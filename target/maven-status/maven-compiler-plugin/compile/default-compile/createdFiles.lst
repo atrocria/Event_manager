@@ -6,13 +6,14 @@ dao\UserDao.class
 ui\EventDetailController.class
 ui\EventPageController.class
 ui\MainController.class
-module-info.class
 model\ConcertTicketType.class
+module-info.class
 model\UserModel.class
 model\UserRole.class
 utils\UserSession.class
 ui\ProfileController.class
 ui\AdminPageController$AdminView.class
+ui\CreateEventController.class
 ui\EventItemController.class
 model\GenreModel.class
 ui\App.class

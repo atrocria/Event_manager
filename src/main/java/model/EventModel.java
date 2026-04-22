@@ -14,7 +14,7 @@ public abstract class EventModel {
     private String status;
     private LocalDateTime creationTime;
     private String registrationDeadLine;
-    private String organizer;
+    private int organizer;
     private LocalDateTime startTime;
     private int durationMin;
     private int max_attendees;
@@ -22,7 +22,7 @@ public abstract class EventModel {
 
     public EventModel() {}
 
-    public EventModel(int id, String title, String description, int venue, String date, LocalDateTime startTime, String organizer, int durationMin, String registrationDeadLine, int max_attendees, String status, LocalDateTime creationTime, 
+    public EventModel(int id, String title, String description, int venue, String date, LocalDateTime startTime, int organizer, int durationMin, String registrationDeadLine, int max_attendees, String status, LocalDateTime creationTime, 
             String type, List<UserModel> attendees) {
         this.id = id;
         this.title = title;
@@ -46,7 +46,7 @@ public abstract class EventModel {
     public String getDate() {return date;}
     public int getVenue() {return venue;}
     public LocalDateTime getStartTime() {return startTime;}
-    public String getOrganizer() {return organizer;}
+    public int getOrganizer() {return organizer;}
     public int getDurationMin() {return durationMin;}
     public int getMax_attendees() {return max_attendees;}
     public int getAttendeesCount() {return attendees != null ? attendees.size() : 0;}
@@ -63,7 +63,7 @@ public abstract class EventModel {
     public void setDate(String var1) {this.date = var1;}
     public void setVenue(int var1) {this.venue = var1;}
     public void setStartTime(LocalDateTime var1) {this.startTime = var1;}
-    public void setOrganizer(String var1) {this.organizer = var1;}
+    public void setOrganizer(int var1) {this.organizer = var1;}
     public void setDurationMin(int var1) {this.durationMin = var1;}
     public void setMax_attendees(int var1) {this.max_attendees = var1;}
     public void setAttendees(List<UserModel> var1) {this.attendees = var1;}

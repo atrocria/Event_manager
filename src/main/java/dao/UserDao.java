@@ -29,7 +29,8 @@ public class UserDao {
                             rs.getInt("user_id"),
                             rs.getString("name"),
                             rs.getString("email"),
-                            role);
+                            role,
+                            rs.getTimestamp("created_at").toLocalDateTime());
                 }
             }
         } catch (SQLException e) {
@@ -39,7 +40,7 @@ public class UserDao {
     }
     
     public static boolean register(String name, String email, String password, UserRole role) {
-        String sql = "INSERT INTO user (name, email, password, role) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO user (name, email, password, role, created_at) VALUES (?, ?, ?, ?, ?)";
 
         // Use the SAME Database helper your EventDAO uses
         try (Connection conn = Database.getConnection();
@@ -61,19 +62,26 @@ public class UserDao {
 
     public List<UserModel> getAllUsers() {
         List<UserModel> users = new java.util.ArrayList<>();
-        String sql = "SELECT user_id, name, email, role FROM user";
+        String sql = "SELECT user_id, name, email, role, created_at FROM user";
 
         try (Connection conn = Database.getConnection();
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                UserRole role = UserRole.valueOf(rs.getString("role").toUpperCase());
+                String roleDb = rs.getString("role");
+                UserRole role;
+                try {
+                    role = UserRole.valueOf(roleDb.toUpperCase());
+                } catch (IllegalArgumentException | NullPointerException e) {
+                    role = UserRole.ATTENDEE; // Default fallback if DB has a typo
+                }
                 users.add(new UserModel(
                         rs.getInt("user_id"),
                         rs.getString("name"),
                         rs.getString("email"),
-                        role));
+                        role,
+                        rs.getTimestamp("created_at").toLocalDateTime()));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -101,7 +109,8 @@ public class UserDao {
                         rs.getInt("user_id"),
                         rs.getString("name"),
                         rs.getString("email"),
-                        role));
+                        role,
+                        rs.getTimestamp("created_at").toLocalDateTime()));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -114,21 +123,18 @@ public class UserDao {
 
         try (Connection conn = Database.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            // This ensures the database applies the change immediately
+            conn.setAutoCommit(true); 
 
-            // Convert the String ID to an Integer for the database
             pstmt.setInt(1, id);
-
             int rowsAffected = pstmt.executeUpdate();
             
-            // If rowsAffected > 0, the user was successfully deleted
+            System.out.println("Delete successful, rows affected: " + rowsAffected);
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.err.println("Error deleting user: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid ID format: " + id);
+            System.err.println("CRITICAL SQL ERROR: " + e.getMessage());
             return false;
         }
     }

@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import model.UserModel;
+import utils.UserSession;
 
 public class AdminUserItemController {
 
@@ -25,7 +26,16 @@ public class AdminUserItemController {
         // Use user methods, not event methods!
         username.setText(user.getname());
         userEmail.setText(user.getemail());
-        dateJoineLabel.setText(user.getCreatedAt().toString());
+        if (user.getCreatedAt() != null) {
+            // Option A: Simple string
+            dateJoineLabel.setText(user.getCreatedAt().toString()); 
+            
+            // Option B: Pretty format (Recommended)
+            // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            // dateLabel.setText(user.getCreatedAt().format(formatter));
+        } else {
+            dateJoineLabel.setText("No Date");
+        }
 
         // Handle the Enum switch
         switch (user.getrole()) {
@@ -54,6 +64,14 @@ public class AdminUserItemController {
 
     @FXML
     private void handleDeleteUserButton(ActionEvent event) {
+        if(user == null) return; // Safety check
+        if(user.getid() == UserSession.getInstance().getUser().getid()) {
+            Alert selfDeleteAlert = new Alert(Alert.AlertType.WARNING);
+            selfDeleteAlert.setContentText("why you want delete urself?");
+            selfDeleteAlert.show();
+            return;
+        }
+
         // 1. Create a confirmation dialog
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Delete User");

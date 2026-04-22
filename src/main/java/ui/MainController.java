@@ -27,6 +27,8 @@ public class MainController {
     @FXML private Button btnMyConcert;
     @FXML private Button btnMyKeynote;
     @FXML private Button btnAdminPanel;
+    @FXML private Button btnEventCreationPanel;
+    
     @FXML private Label lblUserStatus;
     
     @FXML private ComboBox<UserRole> roleSelector;
@@ -52,19 +54,30 @@ public class MainController {
             return;
         }
 
-        UserRole currentRole = UserSession.getInstance().getUser().getrole();
+        UserRole userActualRank = currentUser.getrole();
+        roleSelector.getItems().clear(); // clear existing items
+
+        // Fill the selector only with roles EQUAL or LOWER than their actual rank
+        for (UserRole role : UserRole.values()) {
+            if (userActualRank.getLevel() >= role.getLevel()) {
+                roleSelector.getItems().add(role);
+            }
+        }
+
+        // Default the dropdown to highest available role
+        roleSelector.setValue(userActualRank);
 
         //! add this into event creator tab
         // Use the Service to check permission
         // btnCreateEvent.setVisible(PermissionService.canCreateEvent(currentRole));
-        applyPermissionsBttn(currentRole); //whether need show admin controls
+        applyPermissionsBttn(userActualRank); //whether need show admin controls
 
-        // // Only show roles EQUAL TO or LOWER than the user's actual rank
-        // for (UserRole role : UserRole.values()) {
-        //     if (currentUser.getrole().getLevel() >= role.getLevel()) {
-        //         roleSelector.getItems().add(role);
-        //     }
-        // }
+        // Only show roles EQUAL TO or LOWER than the user's actual rank
+        for (UserRole role : UserRole.values()) {
+            if (currentUser.getrole().getLevel() >= role.getLevel()) {
+                roleSelector.getItems().add(role);
+            }
+        }
 
         // Default the dropdown to their highest role
         roleSelector.setValue(currentUser.getrole());
@@ -160,7 +173,28 @@ public class MainController {
     }
     @FXML
     private void handleAdminButton(ActionEvent event) {
-        loadView("/Admin.fxml");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin.fxml"));
+            
+            // 1. Load the FXML first (this instantiates the controller)
+            Parent root = loader.load(); 
+            
+            // 2. NOW get the controller
+            AdminPageController pageController = loader.getController();
+            
+            // 3. Set the reference
+            if (pageController != null) {
+                pageController.setMainController(this); 
+            }
+
+            contentArea.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace(); // Use printStackTrace to see exactly what failed
+        }
+    }
+    @FXML
+    private void handleCreateEventButton(ActionEvent event) {
+        loadView("/CreateEvent.fxml");
     }
 
     // bottom
@@ -235,6 +269,7 @@ public class MainController {
     // only admins and staff can view these buttons >=80 permission level
     private void applyPermissionsBttn(UserRole selectedRole) {
         btnAdminPanel.setVisible(selectedRole == UserRole.ADMIN);
+        btnEventCreationPanel.setVisible(selectedRole.getLevel() >= 60);
 
         // If a user was on the Admin Panel but switched to "Attendee" view,
         // kick them back to the Dashboard

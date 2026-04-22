@@ -59,14 +59,13 @@ public class EventDAO {
                 pstmt.setNull(4, java.sql.Types.TIME);
             }
 
-            pstmt.setInt(5, event.getVenue()); // venue_id
-            pstmt.setInt(6, Integer.parseInt(event.getOrganizer())); // organizer_id
+            pstmt.setInt(5, event.getVenue());
+            pstmt.setInt(6, event.getOrganizer());
             pstmt.setInt(7, event.getMax_attendees());
             pstmt.setString(8, event.getRegistrationDeadLine());
             pstmt.setString(9, event.getStatus());
             pstmt.setString(10, event.getType());
 
-            // 2. Specific Subclass Fields (The tricky part!)
             // Set everything to null by default
             pstmt.setNull(11, java.sql.Types.VARCHAR); // performer
             pstmt.setNull(12, java.sql.Types.VARCHAR); // research_topic
@@ -79,7 +78,7 @@ public class EventDAO {
                 pstmt.setString(12, ((ConferenceEvent) event).getResearchTopic());
                 pstmt.setString(13, ((ConferenceEvent) event).getKeynoteSpeaker());
             } else if (event instanceof WorkshopEvent) {
-                // Assuming you add this field to your Workshop model later
+                // Assuming Workshop model
                 pstmt.setString(14, ((WorkshopEvent) event).getMaterialList());
             }
 
@@ -132,7 +131,8 @@ public class EventDAO {
             event = ws;
         } else {
             // illegal ahh
-            event = new WorkshopEvent();
+            WorkshopEvent ws = new WorkshopEvent();
+            event = ws;
         }
 
         // Set Common Fields (Mapping DB columns to Model setters)
@@ -147,7 +147,7 @@ public class EventDAO {
             event.setStartTime(LocalDateTime.of(datePart, timePart));
         }
 
-        event.setOrganizer(rs.getString("organizer_id"));
+        event.setOrganizer(rs.getInt("organizer_id"));
         event.setMax_attendees(rs.getInt("max_attendees"));
         event.setRegistrationDeadLine(rs.getString("registration_deadline"));
         event.setStatus(rs.getString("status"));
@@ -180,7 +180,8 @@ public class EventDAO {
                     rs.getInt("user_id"),
                     rs.getString("name"),
                     rs.getString("email"),
-                    UserRole.valueOf(rs.getString("role").toUpperCase()) // Convert DB string to your Enum
+                    UserRole.valueOf(rs.getString("role").toUpperCase()), // Convert DB string to Enum
+                    rs.getTimestamp("created_at").toLocalDateTime() // Convert Timestamp to LocalDateTime
                 );
                 attendees.add(user);
             }

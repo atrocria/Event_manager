@@ -14,7 +14,7 @@ public class ConcertEvent extends EventModel {
     }
 
     public ConcertEvent(int id, String title, String description, int venue, String date, LocalDateTime startTime,
-            String organizer, int durationMin, String registrationDeadLine, int max_attendees, String status,
+            int organizer, int durationMin, String registrationDeadLine, int max_attendees, String status,
             LocalDateTime creationTime, String type, List<UserModel> attendees, String artistName, GenreModel genre,
             String ticketType) {
         super(id, title, description, venue, date, startTime, organizer, durationMin, registrationDeadLine,

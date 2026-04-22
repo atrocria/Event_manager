@@ -1,6 +1,6 @@
 package model;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class UserModel {
     private int id;
@@ -8,17 +8,18 @@ public class UserModel {
     private String email;
     private String password;
     private UserRole role;
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     public boolean canEditEvent() {
         return this.role == UserRole.ADMIN || this.role == UserRole.STAFF;
     }
 
-    public UserModel(int id, String name, String email, UserRole role){
+    public UserModel(int id, String name, String email, UserRole role, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
+        this.createdAt = createdAt;
     }
 
     public int getid() {return id;}
@@ -26,12 +27,12 @@ public class UserModel {
     public String getemail() {return email;}
     public UserRole getrole() {return role;}
     public String password() {return password;}
-    public Timestamp getCreatedAt() {return createdAt;}
+    public LocalDateTime getCreatedAt() {return createdAt;}
     
     public void setId(int var1) {this.id = var1;}
     public void setName(String var1) {this.name = var1;}
     public void setEmail(String var1) {this.email = var1;}
     public void setRole(UserRole var1) {this.role = var1;}
     public void setPassword(String var1) {this.password = var1;}
-    public void setCreatedAt(Timestamp var1) {this.createdAt = var1;}
+    public void setCreatedAt(LocalDateTime var1) {this.createdAt = var1;}
 }
