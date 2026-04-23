@@ -39,10 +39,37 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.panteleyev</groupId>
+        <artifactId>jpackage-maven-plugin</artifactId>
+        <version>1.6.5</version>
+        <executions>
+          <execution>
+            <id>jpackage</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jpackage</goal>
+            </goals>
+            <configuration>
+              <name>EventManager</name>
+              <type>EXE</type>
+              <appVersion>1.0.0</appVersion>
+              <vendor>com.eventmanager</vendor>
+              <destination>target/dist</destination>
+              <input>target</input>
+              <mainJar>${project.artifactId}-${project.version}.jar</mainJar>
+              <mainClass>ui.App</mainClass>
+              <winDirChooser>true</winDirChooser>
+              <winShortcut>true</winShortcut>
+              <winMenu>true</winMenu>
+              <runtimeImage>${java.home}</runtimeImage>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <properties>
-    <maven.compiler.release>25</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javafx.version>25.0.2</javafx.version>
     <maven.compiler.target>25</maven.compiler.target>

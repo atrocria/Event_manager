@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="92.0" prefWidth="875.0" style="-fx-background-radius: 50; -fx-background-color: #0D1A22;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EventItemController">
+   <children>
+      <HBox prefHeight="75.0" prefWidth="559.0">
+         <children>
+            <AnchorPane prefHeight="75.0" prefWidth="543.0">
+               <children>
+                  <Label fx:id="titleLabel" layoutX="5.0" layoutY="6.0" prefHeight="27.0" prefWidth="122.0" styleClass="card elevated" text="Card title" textFill="WHITE">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <Label fx:id="extraInfoLabel" layoutX="295.0" layoutY="29.0" prefHeight="27.0" prefWidth="167.0" text="extraInfoLabel" textFill="WHITE">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="descriptionLabel" layoutX="6.0" layoutY="34.0" prefHeight="15.0" prefWidth="278.0" text="description" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="dateLabel" layoutX="7.0" layoutY="59.0" text="Date" textFill="WHITE" />
+                  <Label fx:id="deadlineLabel" layoutX="300.0" layoutY="6.0" text="Deadline" textFill="WHITE" />
+               </children>
+            </AnchorPane>
+            <Region nodeOrientation="RIGHT_TO_LEFT" prefHeight="78.0" prefWidth="166.0" />
+            <VBox prefHeight="78.0" prefWidth="148.0">
+               <children>
+                  <Label fx:id="durationLabel" text="duration" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Label>
+                  <Label fx:id="attendeesCountLabel" prefHeight="18.0" prefWidth="125.0" text="attendees / max_attendees" textFill="WHITE">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="EventDetailsBttn" mnemonicParsing="false" onAction="#handleGetTicketButton" prefHeight="33.0" prefWidth="116.0" style="-fx-background-radius: 30;" text="Get ticket" textFill="WHITE" />
+               </children>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets bottom="12.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="20.0" />
+   </padding>
+</VBox>

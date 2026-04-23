@@ -1,6 +1,9 @@
-<project xmlns="http://apache.org" xmlns:xsi="http://w3.org"
-  xsi:schemaLocation="http://apache.org http://apache.org">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://apache.org"
+         xmlns:xsi="http://w3.org"
+         xsi:schemaLocation="http://apache.org http://apache.org">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.eventmanager</groupId>
     <artifactId>event-manager</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -8,9 +11,9 @@
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
-        <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javafx.version>25.0.2</javafx.version>
+        <!-- Matching your Temurin 25 setup -->
+        <javafx.version>25.0.2</javafx.version> 
     </properties>
 
     <dependencies>
@@ -32,10 +35,10 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <version>8.0.33</version>
+            <version>8.3.0</version>
         </dependency>
         <dependency>
-            <groupId>io.github.mkpaz</artifactId>
+            <groupId>io.github.mkpaz</groupId>
             <artifactId>atlantafx-base</artifactId>
             <version>2.0.1</version>
         </dependency>
@@ -43,13 +46,14 @@
 
     <build>
         <plugins>
+            <!-- 1. Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
             </plugin>
 
-            <!-- 1. Create the Fat JAR -->
+            <!-- 2. Create the executable Jar (Shade) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -57,9 +61,7 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
+                        <goals><goal>shade</goal></goals>
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -81,30 +83,30 @@
                 </executions>
             </plugin>
 
-            <!-- 2. Wrap into EXE -->
+            <!-- 3. Official jpackage tool to create the EXE with bundled JRE -->
             <plugin>
-                <groupId>com.github.akaze</groupId>
-                <artifactId>launch4j-maven-plugin</artifactId>
-                <version>2.5.2</version>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.6.5</version>
                 <executions>
                     <execution>
-                        <id>l4j-gui</id>
+                        <id>jpackage</id>
                         <phase>package</phase>
-                        <goals>
-                            <goal>launch4j</goal>
-                        </goals>
+                        <goals><goal>jpackage</goal></goals>
                         <configuration>
-                            <headerType>gui</headerType>
-                            <outfile>target/EventManager.exe</outfile>
-                            <jar>target/event-manager-1.0-SNAPSHOT.jar</jar>
-                            <errTitle>App Error</errTitle>
-                            <classPath>
-                                <mainClass>ui.App</mainClass>
-                            </classPath>
-                            <jre>
-                                <path>%JAVA_HOME%</path>
-                                <minVersion>25</minVersion>
-                            </jre>
+                            <name>EventManager</name>
+                            <type>EXE</type>
+                            <appVersion>1.0.0</appVersion>
+                            <vendor>com.eventmanager</vendor>
+                            <destination>target/dist</destination>
+                            <input>target</input>
+                            <mainJar>${project.artifactId}-${project.version}.jar</mainJar>
+                            <mainClass>ui.App</mainClass>
+                            <winDirChooser>true</winDirChooser>
+                            <winShortcut>true</winShortcut>
+                            <winMenu>true</winMenu>
+                            <!-- This command tells it to include a JRE -->
+                            <runtimeImage>${java.home}</runtimeImage>
                         </configuration>
                     </execution>
                 </executions>

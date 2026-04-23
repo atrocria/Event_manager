@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.CartController">
+   <children>
+      <VBox spacing="5.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="25.0">
+         <children>
+            <Label text="Shopping Cart" textFill="#2c3e50">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblItemCount" text="0 items" textFill="#7f8c8d" />
+         </children>
+      </VBox>
+
+      <HBox layoutY="100.0" spacing="30.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="100.0">
+         <children>
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" HBox.hgrow="ALWAYS">
+               <content>
+                  <VBox fx:id="cartItemsContainer" spacing="15.0">
+                     <padding>
+                        <Insets bottom="10.0" left="2.0" right="10.0" top="2.0" />
+                     </padding>
+                  </VBox>
+               </content>
+            </ScrollPane>
+
+            <VBox prefWidth="280.0" spacing="20.0" style="-fx-background-radius: 15;">
+               <padding>
+                  <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+               </padding>
+               <children>
+                  <Label text="Order Summary" textFill="#2c3e50">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Separator />
+                  <VBox fx:id="summaryItemsList" spacing="10.0" /> <Separator />
+                  <HBox alignment="CENTER_LEFT">
+                     <children>
+                        <Label text="Subtotal" textFill="#7f8c8d" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label fx:id="lblSubtotal" style="-fx-font-weight: bold;" text="\$0.00" textFill="#2c3e50" />
+                     </children>
+                  </HBox>
+                  <Region VBox.vgrow="ALWAYS" />
+                  <Button onAction="#handleCheckout" prefHeight="45.0" prefWidth="230.0" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 8; -fx-font-weight: bold;" text="PROCEED TO CHECKOUT" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
