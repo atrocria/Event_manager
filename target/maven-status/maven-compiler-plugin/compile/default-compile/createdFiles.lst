@@ -33,5 +33,6 @@ ui\LoginController.class
 ui\StaffPageController$1.class
 model\EventModel.class
 model\WorkshopEvent.class
+ui\CartItemController.class
 ui\AdminUserItemController$1.class
 model\ConcertEvent.class

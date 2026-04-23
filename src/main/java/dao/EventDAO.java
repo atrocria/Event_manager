@@ -156,7 +156,7 @@ public class EventDAO {
         event.setDate(rs.getString("event_date"));
         event.setVenue(rs.getInt("venue_id"));
 
-        if (rs.getTimestamp("start_time") != null) {
+        if (rs.getTime("start_time") != null) {
             LocalDate datePart = rs.getDate("event_date").toLocalDate();
             LocalTime timePart = rs.getTime("start_time").toLocalTime();
             event.setStartTime(LocalDateTime.of(datePart, timePart));
@@ -409,6 +409,57 @@ public class EventDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public boolean deleteEvent(int eventId) {
+        UserModel user = UserSession.getInstance().getUser();
+
+        // Security Guard: double check role level
+        if (user == null || user.getrole().getLevel() < 100) { // Assuming 100 is Admin
+            System.err.println("SECURITY ALERT: Unauthorized attempt to delete event.");
+            return false;
+        }
+
+        String deleteRegistrationsSql = "DELETE FROM registration WHERE event_id = ?";
+        String deleteEventSql = "DELETE FROM event WHERE event_id = ?";
+
+        Connection conn = null;
+        try {
+            conn = Database.getConnection();
+            conn.setAutoCommit(false); // Start Transaction
+
+            // Step 1: Clear out registrations first to satisfy Foreign Key constraints
+            try (PreparedStatement pstmtReg = conn.prepareStatement(deleteRegistrationsSql)) {
+                pstmtReg.setInt(1, eventId);
+                pstmtReg.executeUpdate();
+            }
+
+            // Step 2: Delete the actual event
+            try (PreparedStatement pstmtEvent = conn.prepareStatement(deleteEventSql)) {
+                pstmtEvent.setInt(1, eventId);
+                int affectedRows = pstmtEvent.executeUpdate();
+
+                if (affectedRows > 0) {
+                    conn.commit(); // Save changes
+                    System.out.println("✅ Event " + eventId + " and all related registrations deleted.");
+                    return true;
+                }
+            }
+
+            conn.rollback(); // Rollback if something went wrong
+            return false;
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "❌ Delete Failed!", e);
+            return false;
+        } finally {
+            if (conn != null) {
+                try { conn.setAutoCommit(true); conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+            }
         }
     }
 }

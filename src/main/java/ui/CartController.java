@@ -4,7 +4,11 @@ import dao.EventDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.EventModel;
@@ -13,56 +17,91 @@ import java.util.List;
 
 public class CartController {
 
-    @FXML private VBox cartItemsContainer; // The VBox from your screenshot
+    @FXML private VBox cartItemsContainer;
+    @FXML private VBox summaryItemsList;
+    @FXML private Label lblItemCount;
+    @FXML private Label lblSubtotal;
 
     private EventDAO eventDAO = new EventDAO();
 
     @FXML
     public void initialize() {
-        loadCartItems();
+        refreshCart();
     }
 
-    private void loadCartItems() {
+    private void refreshCart() {
         cartItemsContainer.getChildren().clear();
-        int userId = UserSession.getInstance().getUser().getid();
+        summaryItemsList.getChildren().clear();
         
-        // You'll need a method in EventDAO that returns events for a specific user
-        List<EventModel> paymentPendingEvents = eventDAO.getEventsWithPendingPayment(userId);
+        int userId = UserSession.getInstance().getUser().getid();
+        List<EventModel> events = eventDAO.getEventsWithPendingPayment(userId);
 
-        for (EventModel event : paymentPendingEvents) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/CartItem.fxml"));
-                Node itemNode = loader.load();
-
-                // Get labels from the template and set text
-                Label title = (Label) itemNode.lookup("#lblEventTitle");
-                Label date = (Label) itemNode.lookup("#lblDate");
-                
-                title.setText(event.getTitle());
-                date.setText(event.getDate());
-
-                cartItemsContainer.getChildren().add(itemNode);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (lblItemCount != null) {
+            lblItemCount.setText("You have " + events.size() + " items in your cart");
         }
+
+        double total = 0;
+
+        for (EventModel event : events) {
+            addEventToMainList(event);
+            addEventToSummary(event);
+            total += event.calculateTicketPrice();
+        }
+
+        lblSubtotal.setText(String.format("$%.2f", total));
+    }
+
+    private void addEventToMainList(EventModel event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CartItem.fxml"));
+            Node itemNode = loader.load();
+
+            CartItemController itemController = loader.getController();
+            // Using a lambda to refresh the whole cart if an item is removed
+            itemController.setData(event, () -> refreshCart());
+
+            cartItemsContainer.getChildren().add(itemNode);
+        } catch (Exception e) {
+            System.err.println("Error loading CartItem.fxml: " + e.getMessage());
+        }
+    }
+
+    private void addEventToSummary(EventModel event) {
+        HBox row = new HBox();
+        row.setSpacing(10);
+        
+        Label name = new Label(event.getTitle());
+        name.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 13px;");
+        name.setMaxWidth(160);
+        
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        
+        Label price = new Label(String.format("$%.2f", event.calculateTicketPrice()));
+        price.setStyle("-fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+        row.getChildren().addAll(name, spacer, price);
+        summaryItemsList.getChildren().add(row);
     }
 
     @FXML
     private void handleCheckout() {
-        // We get a reference to the MainController to use its loadView method
         try {
-            // Find the MainController (assuming it's the parent of this view)
-            // Or simpler: Use the loadView logic you already have in MainController
             Stage stage = (Stage) cartItemsContainer.getScene().getWindow();
             MainController main = (MainController) stage.getUserData(); 
-            // Note: If you haven't set UserData, you can also use your existing
-            // MainController instance if you passed it in.
             
-            if(main != null) {
-                main.loadView("/Checkout.fxml");
-            } else {
-                System.out.println("MainController reference none. Cannot load checkout view.");
+            if (main != null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Checkout.fxml"));
+                Parent checkoutView = loader.load();
+                
+                CheckoutController checkoutCtrl = loader.getController();
+                
+                // Fetch items and pass them to the checkout controller
+                int userId = UserSession.getInstance().getUser().getid();
+                List<EventModel> events = eventDAO.getEventsWithPendingPayment(userId);
+                checkoutCtrl.prepareCheckout(events);
+                
+                main.setCenterView(checkoutView);
             }
         } catch (Exception e) {
             e.printStackTrace();

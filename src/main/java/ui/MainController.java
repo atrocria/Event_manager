@@ -272,6 +272,8 @@ public class MainController {
             EventDetailController controller = loader.getController();
             controller.initializeDetails(event, currentUser.getrole());
 
+            this.currentViewPath = "/EventDetail.fxml";
+
             // Clear area and show the page
             contentArea.getChildren().clear();
             contentArea.getChildren().add(detailView);
@@ -301,4 +303,13 @@ public class MainController {
         }
     }
 
+    public void setCenterView(Parent view) {
+        contentArea.getChildren().setAll(view);
+        
+        // Ensure it stretches to fill the whole space
+        AnchorPane.setTopAnchor(view, 0.0);
+        AnchorPane.setBottomAnchor(view, 0.0);
+        AnchorPane.setLeftAnchor(view, 0.0);
+        AnchorPane.setRightAnchor(view, 0.0);
+    }
 }

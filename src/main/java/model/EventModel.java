@@ -79,8 +79,5 @@ public abstract class EventModel {
         return startTime.plusMinutes(durationMin);
     }
 
-    public double calculateTicketPrice() {
-        //! calculate real price
-        return 100;
-    }
+    public abstract double calculateTicketPrice();
 }

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="92.0" prefWidth="875.0" style="-fx-background-radius: 50; -fx-background-color: #3a3a3a;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EventItemController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="92.0" prefWidth="875.0" style="-fx-background-radius: 50; -fx-background-color: #0D1A22;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EventItemController">
    <children>
       <HBox prefHeight="75.0" prefWidth="559.0">
          <children>

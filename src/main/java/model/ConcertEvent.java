@@ -95,11 +95,13 @@ public class ConcertEvent extends EventModel {
         return withinFiveDaysOfPosting && atLeastOneWeekBefore && notTooLate;
     }
 
-    // @Override
-    // public double calculateTicketPrice(){
-    //! early bird prices
-    //     return
-    // }
-
-
+    @Override
+    public double calculateTicketPrice(){
+        //early bird prices?
+        if (isEarlyBirdEligible()) {
+            return 50.0; // example early bird price
+        } else {
+            return 100.0; // regular price
+        }
+    }
 }

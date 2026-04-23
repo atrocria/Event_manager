@@ -5,51 +5,52 @@
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.DashboardController">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #1a1a1a;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.DashboardController">
    <children>
-      <VBox spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+      <VBox spacing="25.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <padding>
+            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+         </padding>
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dashboard Overview">
-               <font>
-                  <Font name="System Bold" size="28.0" />
-               </font>
-            </Text>
-            
             <HBox spacing="20.0">
                <children>
-                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #2d2d2d; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                  <VBox style="-fx-background-color: #2d2d2d; -fx-background-radius: 10; -fx-padding: 20;" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label text="Total Events" textFill="#7f8c8d" />
-                        <Label fx:id="lblTotalEvents" text="0" style="-fx-font-size: 24; -fx-font-weight: bold;" />
+                        <Label text="Total Events" textFill="#bdc3c7" />
+                        <Label fx:id="lblTotalEvents" text="0" textFill="WHITE">
+                           <font><Font name="System Bold" size="28.0" /></font>
+                        </Label>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #2d2d2d; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                  <VBox style="-fx-background-color: #2d2d2d; -fx-background-radius: 10; -fx-padding: 20;" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label text="My Registrations" textFill="#7f8c8d" />
-                        <Label fx:id="lblMyRegistrations" text="0" style="-fx-font-size: 24; -fx-font-weight: bold;" />
+                        <Label text="My Registrations" textFill="#bdc3c7" />
+                        <Label fx:id="lblMyRegistrations" text="0" textFill="#2ecc71">
+                           <font><Font name="System Bold" size="28.0" /></font>
+                        </Label>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #2d2d2d; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                  <VBox style="-fx-background-color: #2d2d2d; -fx-background-radius: 10; -fx-padding: 20;" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label text="Role Level" textFill="#7f8c8d" />
-                        <Label fx:id="lblRoleLevel" text="-" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #3498db;" />
+                        <Label text="Current Role" textFill="#bdc3c7" />
+                        <Label fx:id="lblRoleLevel" text="ATTENDEE" textFill="#3498db">
+                           <font><Font name="System Bold" size="20.0" /></font>
+                        </Label>
                      </children>
                   </VBox>
                </children>
             </HBox>
 
-            <Separator prefWidth="200.0" />
-
             <VBox spacing="10.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Text text="Recent Activity" style="-fx-font-size: 18; -fx-font-weight: bold;" />
-                  <TableView fx:id="tblRecentActivity" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                    <columns>
-                      <TableColumn fx:id="colEvent" prefWidth="300.0" text="Event" />
-                      <TableColumn fx:id="colDate" prefWidth="150.0" text="Date" />
-                      <TableColumn fx:id="colStatus" prefWidth="150.0" text="Status" />
-                    </columns>
-                  </TableView>
+                  <Label text="Upcoming Events" textFill="WHITE">
+                     <font><Font name="System Bold" size="18.0" /></font>
+                  </Label>
+                  <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+                     <content>
+                        <FlowPane fx:id="eventGrid" hgap="20.0" vgap="20.0" style="-fx-background-color: #1a1a1a;" />
+                     </content>
+                  </ScrollPane>
                </children>
             </VBox>
          </children>

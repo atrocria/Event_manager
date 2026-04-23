@@ -30,4 +30,16 @@ public class ConferenceEvent extends EventModel {
     public void setKeynoteSpeaker(String var1) {this.keynoteSpeaker = var1;}
     public void setResearchTopic(String var1) {this.researchTopic = var1;}
     public void setSpeakerBio(String var1) {this.speakerBio = var1;}
+
+    @Override
+    public double calculateTicketPrice() {
+        // Base price for conference events
+        double basePrice = 150.0;
+
+        // Additional cost based on the number of sessions
+        double sessionCost = sessions != null ? sessions.size() * 20.0 : 0.0;
+
+        // Total ticket price
+        return basePrice + sessionCost;
+    }
 }
