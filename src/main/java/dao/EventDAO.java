@@ -20,6 +20,7 @@ import model.WorkshopEvent;
 import ui.ShowTicketController;
 import utils.UserSession;
 import model.EventModel;
+import model.TicketModel;
 import model.UserModel;
 import model.UserRole;
 
@@ -36,7 +37,7 @@ public class EventDAO {
         UserModel user = UserSession.getInstance().getUser();
 
         // 1. Security Check
-        if (user == null || user.getrole().getLevel() < 60) {
+        if (user == null || user.getRole().getLevel() < 60) {
             System.err.println("SECURITY ALERT: Unauthorized attempt to add event.");
             return;
         }
@@ -105,16 +106,18 @@ public class EventDAO {
 
     public List<UserModel> getAllUsers() {
         List<UserModel> users = new ArrayList<>();
-        String query = "SELECT id, email, role FROM users";
+        String query = "SELECT user_id, email, role FROM user";
         try (Connection conn = Database.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 users.add(new UserModel(
-                    rs.getInt("id"),
-                    rs.getString("email"), 
-                    UserRole.valueOf(rs.getString("role")), null
-                ));
+                rs.getInt("user_id"),
+                null, // placeholder for 'name' if not in query
+                rs.getString("email"),
+                UserRole.valueOf(rs.getString("role").toUpperCase()),
+                null  // placeholder for 'createdAt' if not in query
+            ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -344,27 +347,35 @@ public class EventDAO {
         }
     }
 
-    public List<ShowTicketController.TicketRow> getDetailedTicketsByUserId(int userId) {
-        List<ShowTicketController.TicketRow> list = new ArrayList<>();
-        String sql = "SELECT e.title, r.booking_id, r.seat_number, r.payment_status, r.amount_paid " +
-                    "FROM registration r JOIN event e ON r.event_id = e.event_id " +
+    // Inside EventDAO.java
+    public List<ui.ShowTicketController.TicketRow> getDetailedTicketsByUserId(int userId) {
+        List<ui.ShowTicketController.TicketRow> tickets = new ArrayList<>();
+        
+        // CHANGED: e.id -> e.event_id to match your database schema
+        String sql = "SELECT r.registration_id, e.title, r.seat_number, r.amount_paid, r.payment_status " +
+                    "FROM registration r " +
+                    "JOIN event e ON r.event_id = e.event_id " + 
                     "WHERE r.user_id = ?";
 
         try (Connection conn = Database.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
+
             while (rs.next()) {
-                list.add(new ShowTicketController.TicketRow(
+                tickets.add(new ui.ShowTicketController.TicketRow(
+                    rs.getInt("registration_id"), 
                     rs.getString("title"),
-                    rs.getString("booking_id"),
                     rs.getString("seat_number"),
-                    rs.getString("payment_status"),
-                    rs.getDouble("amount_paid")
+                    rs.getDouble("amount_paid"),
+                    rs.getString("payment_status")
                 ));
             }
-        } catch (SQLException e) { e.printStackTrace(); }
-        return list;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tickets;
     }
 
     public boolean isVenueBigEnough(int venueId, int requestedMaxAttendees) {
@@ -464,16 +475,18 @@ public class EventDAO {
         return list;
     }
     
-    public void updateUserRole(int userId, UserRole newRole) {
+    public boolean updateUserRole(int userId, UserRole newRole) {
         String sql = "UPDATE user SET role = ? WHERE user_id = ?";
         try (Connection conn = Database.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, newRole.name()); // Sets role to 'STAFF', 'ADMIN', etc.
+            pstmt.setString(1, newRole.name());
             pstmt.setInt(2, userId);
             pstmt.executeUpdate();
+            return true; 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -521,7 +534,7 @@ public class EventDAO {
         UserModel user = UserSession.getInstance().getUser();
 
         // Security Guard: double check role level
-        if (user == null || user.getrole().getLevel() < 100) { // Assuming 100 is Admin
+        if (user == null || user.getRole().getLevel() < 100) { // Assuming 100 is Admin
             System.err.println("SECURITY ALERT: Unauthorized attempt to delete event.");
             return false;
         }

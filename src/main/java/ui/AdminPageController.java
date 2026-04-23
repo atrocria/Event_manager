@@ -48,7 +48,7 @@ public class AdminPageController {
         // Debugging login session
         UserModel user = UserSession.getInstance().getUser();
         if (user != null) {
-            System.out.println("Admin logged in: " + user.getname());
+            System.out.println("Admin logged in: " + user.getName());
         }
 
         // Default view on load
@@ -125,7 +125,7 @@ public class AdminPageController {
                 AdminUserItemController controller = loader.getController();
                 controller.setData(user, (selectedUser) -> {
                     // Logic to delete the user
-                    boolean success = new UserDao().deleteUser(selectedUser.getid());
+                    boolean success = new UserDao().deleteUser(selectedUser.getId());
                     if (success) {
                         loadUsersFromDatabase(searchField.getText()); // Refresh with current search
                     } else {

@@ -34,7 +34,6 @@
             <Button fx:id="btnEventPanel" mnemonicParsing="false" onAction="#handleEventPageButton" text="Events" />
             <Button fx:id="btnCartPanel" mnemonicParsing="false" onAction="#handleCartButton" text="Cart" />
             <Button fx:id="btnShowTicketPanel" mnemonicParsing="false" onAction="#handleShowTicketButton" text="Ticket" />
-            <Button fx:id="btnArtistSpeakerPanel" mnemonicParsing="false" onAction="#handleArtistSpeakerButton" text="ArtistSpeaker" />
             <Button fx:id="btnEventCreationPanel" mnemonicParsing="false" onAction="#handleCreateEventButton" text="CEvent" />
             <Button fx:id="btnStaffPanel" mnemonicParsing="false" onAction="#handleStaffButton" text="Staff" />
             <Button fx:id="btnAdminPanel" mnemonicParsing="false" onAction="#handleAdminButton" text="Admin" />

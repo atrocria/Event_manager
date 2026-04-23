@@ -2,6 +2,7 @@ dao\EventDAO.class
 model\AttendeeView.class
 ui\PostPaymentDetailsController.class
 service\PermissionService.class
+ui\Main.class
 dao\UserDao.class
 ui\EventDetailController.class
 model\UserModel.class
@@ -36,4 +37,5 @@ model\WorkshopEvent.class
 ui\CartItemController.class
 ui\AdminUserItemController$1.class
 ui\ShowTicketController$TicketRow.class
+model\TicketModel.class
 model\ConcertEvent.class

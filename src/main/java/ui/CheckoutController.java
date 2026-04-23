@@ -60,7 +60,7 @@ public class CheckoutController {
             return;
         }
 
-        int userId = UserSession.getInstance().getUser().getid();
+        int userId = UserSession.getInstance().getUser().getId();
         if (eventDAO.completeUserPayment(userId)) {
             navigateToView("/PostPaymentDetails.fxml");
         } else {

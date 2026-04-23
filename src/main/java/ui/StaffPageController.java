@@ -15,25 +15,19 @@ import model.UserRole;
 public class StaffPageController {
 
     // Attendee Check-in Tab
-    @FXML
-    private TextField txtSearchAttendee;
-    @FXML
-    private TableView<AttendeeView> tblAttendance;
-    @FXML
-    private TableColumn<AttendeeView, String> colUser;
-    @FXML
-    private TableColumn<AttendeeView, String> colEvent;
-    @FXML
-    private TableColumn<AttendeeView, String> colStatus;
-    @FXML
-    private TableColumn<AttendeeView, Void> colAction;
+    @FXML private TextField txtSearchAttendee;
+    @FXML private TableView<AttendeeView> tblAttendance;
+    @FXML private TableColumn<AttendeeView, String> colUser;
+    @FXML private TableColumn<AttendeeView, String> colEvent;
+    @FXML private TableColumn<AttendeeView, String> colStatus;
+    @FXML private TableColumn<AttendeeView, String> colPaymentStatus;
+    @FXML private TableColumn<AttendeeView, Void> colAction;
 
     // Permissions Tab
     @FXML private TableView<UserModel> tblUsers;
     @FXML private TableColumn<UserModel, String> colUserName;
     @FXML private TableColumn<UserModel, UserRole> colCurrentRole;
     @FXML private TableColumn<UserModel, Void> colRoleAction;
-    @FXML private TableColumn<AttendeeView, String> colPaymentStatus;
 
     private final EventDAO eventDAO = new EventDAO();
     private ObservableList<AttendeeView> attendeeData = FXCollections.observableArrayList();
@@ -44,7 +38,7 @@ public class StaffPageController {
         setupAttendanceTable();
         setupPermissionsTable();
         loadAttendeeData();
-        loadUserData(); // You'll need a method in DAO to get all users
+        loadUserData(); 
     }
 
     private void setupAttendanceTable() {
@@ -53,7 +47,7 @@ public class StaffPageController {
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colPaymentStatus.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
 
-        // Create the "Check-In" Button in the column
+        // ACTION COLUMN: For Check-In Buttons
         colAction.setCellFactory(param -> new TableCell<AttendeeView, Void>() {
             private final Button btn = new Button("Check-In");
             {
@@ -69,54 +63,31 @@ public class StaffPageController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    UserModel user = getTableView().getItems().get(getIndex());
-                    // This ensures the ComboBox shows the user's current role
-                    roleCombo.setValue(user.getRole()); 
-                    setGraphic(container);
+                    AttendeeView data = getTableView().getItems().get(getIndex());
+                    btn.setDisable("CHECKED_IN".equals(data.getStatus()));
+                    setGraphic(btn);
                 }
             }
         });
 
-        
         // Search Filter Logic
         FilteredList<AttendeeView> filteredData = new FilteredList<>(attendeeData, p -> true);
-        txtSearchAttendee.textProperty().addListener((observable, oldValue, newValue) -> {
+        txtSearchAttendee.textProperty().addListener((obs, old, newValue) -> {
             filteredData.setPredicate(attendee -> {
-                if (newValue == null || newValue.isEmpty())
-                    return true;
-                String lowerCaseFilter = newValue.toLowerCase();
-                return attendee.getUserName().toLowerCase().contains(lowerCaseFilter) ||
-                        attendee.getEventTitle().toLowerCase().contains(lowerCaseFilter);
+                if (newValue == null || newValue.isEmpty()) return true;
+                String filter = newValue.toLowerCase();
+                return attendee.getUserName().toLowerCase().contains(filter) ||
+                       attendee.getEventTitle().toLowerCase().contains(filter);
             });
         });
         tblAttendance.setItems(filteredData);
-    }
-    
-    private void loadUserData() {
-        userData.clear();
-        // Assuming your eventDAO has a method to get all users
-        userData.addAll(eventDAO.getAllUsers()); 
-        tblUsers.setItems(userData);
-    }
-
-    @FXML
-    private void loadAttendeeData() {
-        attendeeData.clear();
-        attendeeData.addAll(eventDAO.getPendingCheckIns());
-    }
-
-    private void handleCheckIn(AttendeeView attendee) {
-        boolean success = eventDAO.updateAttendance(attendee.getRegistrationId(), "CHECKED_IN");
-        if (success) {
-            loadAttendeeData(); // Refresh table
-            System.out.println("Check-in successful for: " + attendee.getUserName());
-        }
     }
 
     private void setupPermissionsTable() {
         colUserName.setCellValueFactory(new PropertyValueFactory<>("email"));
         colCurrentRole.setCellValueFactory(new PropertyValueFactory<>("role"));
 
+        // ROLE ACTION COLUMN: For ComboBox + Update Button
         colRoleAction.setCellFactory(param -> new TableCell<UserModel, Void>() {
             private final ComboBox<UserRole> roleCombo = new ComboBox<>(
                     FXCollections.observableArrayList(UserRole.values()));
@@ -127,9 +98,10 @@ public class StaffPageController {
                 updateBtn.setOnAction(event -> {
                     UserModel user = getTableView().getItems().get(getIndex());
                     UserRole newRole = roleCombo.getValue();
-                    if (newRole != null) {
-                        eventDAO.updateUserRole(user.getid(), newRole);
-                        // Refresh data here
+                    if (newRole != null && user != null) {
+                        if (eventDAO.updateUserRole(user.getId(), newRole)) {
+                            loadUserData(); // Refresh to show changes
+                        }
                     }
                 });
             }
@@ -137,8 +109,32 @@ public class StaffPageController {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : container);
+                if (empty || getTableView().getItems().get(getIndex()) == null) {
+                    setGraphic(null);
+                } else {
+                    UserModel user = getTableView().getItems().get(getIndex());
+                    roleCombo.setValue(user.getRole()); // Set current role
+                    setGraphic(container);
+                }
             }
         });
+        tblUsers.setItems(userData);
+    }
+
+    private void loadUserData() {
+        userData.clear();
+        userData.addAll(eventDAO.getAllUsers());
+    }
+
+    @FXML
+    private void loadAttendeeData() {
+        attendeeData.clear();
+        attendeeData.addAll(eventDAO.getPendingCheckIns());
+    }
+
+    private void handleCheckIn(AttendeeView attendee) {
+        if (eventDAO.updateAttendance(attendee.getRegistrationId(), "CHECKED_IN")) {
+            loadAttendeeData();
+        }
     }
 }

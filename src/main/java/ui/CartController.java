@@ -33,7 +33,7 @@ public class CartController {
         cartItemsContainer.getChildren().clear();
         summaryItemsList.getChildren().clear();
         
-        int userId = UserSession.getInstance().getUser().getid();
+        int userId = UserSession.getInstance().getUser().getId();
         List<EventModel> events = eventDAO.getEventsWithPendingPayment(userId);
 
         if (lblItemCount != null) {
@@ -97,7 +97,7 @@ public class CartController {
                 CheckoutController checkoutCtrl = loader.getController();
                 
                 // Fetch items and pass them to the checkout controller
-                int userId = UserSession.getInstance().getUser().getid();
+                int userId = UserSession.getInstance().getUser().getId();
                 List<EventModel> events = eventDAO.getEventsWithPendingPayment(userId);
                 checkoutCtrl.prepareCheckout(events);
                 

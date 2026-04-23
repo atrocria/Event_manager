@@ -6,6 +6,7 @@ C:\github\Event_manager\src\main\java\model\ConcertEvent.java
 C:\github\Event_manager\src\main\java\model\ConferenceEvent.java
 C:\github\Event_manager\src\main\java\model\EventModel.java
 C:\github\Event_manager\src\main\java\model\GenreModel.java
+C:\github\Event_manager\src\main\java\model\TicketModel.java
 C:\github\Event_manager\src\main\java\model\UserModel.java
 C:\github\Event_manager\src\main\java\model\UserRole.java
 C:\github\Event_manager\src\main\java\model\WorkshopEvent.java
@@ -26,6 +27,7 @@ C:\github\Event_manager\src\main\java\ui\EventDetailController.java
 C:\github\Event_manager\src\main\java\ui\EventItemController.java
 C:\github\Event_manager\src\main\java\ui\EventPageController.java
 C:\github\Event_manager\src\main\java\ui\LoginController.java
+C:\github\Event_manager\src\main\java\ui\Main.java
 C:\github\Event_manager\src\main\java\ui\MainController.java
 C:\github\Event_manager\src\main\java\ui\PostPaymentDetailsController.java
 C:\github\Event_manager\src\main\java\ui\ProfileController.java

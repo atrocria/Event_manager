@@ -22,11 +22,11 @@ public class UserModel {
         this.createdAt = createdAt;
     }
 
-    public int getid() {return id;}
-    public String getname() {return name;}
-    public String getemail() {return email;}
-    public UserRole getrole() {return role;}
-    public String password() {return password;}
+    public int getId() {return id;}
+    public String getName() {return name;}
+    public String getEmail() {return email;}
+    public UserRole getRole() {return role;}
+    public String getPassword() {return password;}
     public LocalDateTime getCreatedAt() {return createdAt;}
     
     public void setId(int var1) {this.id = var1;}

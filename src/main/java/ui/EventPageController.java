@@ -36,8 +36,8 @@ public class EventPageController {
 
         UserModel user = UserSession.getInstance().getUser();
         if (user != null) {
-            System.out.println("Currently inside EventsPage, logged in as: " + user.getname());
-            // Use user.getrole() here to hide/show buttons
+            System.out.println("Currently inside EventsPage, logged in as: " + user.getName());
+            // Use user.getRole() here to hide/show buttons
         }
 
         loadEventsFromDatabase("");

@@ -36,10 +36,10 @@ public class DashboardController {
         if (currentUser == null) return;
 
         // 1. Setup Stats Header
-        lblRoleLevel.setText(currentUser.getrole().name());
+        lblRoleLevel.setText(currentUser.getRole().name());
         
         List<EventModel> allEvents = eventDAO.getAllEvents();
-        List<EventModel> myEvents = eventDAO.getEventsByUserId(currentUser.getid());
+        List<EventModel> myEvents = eventDAO.getEventsByUserId(currentUser.getId());
 
         lblTotalEvents.setText(String.valueOf(allEvents.size()));
         lblMyRegistrations.setText(String.valueOf(myEvents.size()));

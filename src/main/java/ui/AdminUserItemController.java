@@ -24,8 +24,8 @@ public class AdminUserItemController {
         this.user = user;
 
         // Use user methods, not event methods!
-        username.setText(user.getname());
-        userEmail.setText(user.getemail());
+        username.setText(user.getName());
+        userEmail.setText(user.getEmail());
         if (user.getCreatedAt() != null) {
             // Option A: Simple string
             dateJoineLabel.setText(user.getCreatedAt().toString()); 
@@ -38,7 +38,7 @@ public class AdminUserItemController {
         }
 
         // Handle the Enum switch
-        switch (user.getrole()) {
+        switch (user.getRole()) {
             case ADMIN:
                 roleLabel.setText("🛡️ Admin");
                 roleLabel.setStyle("-fx-text-fill: #e74c3c;"); // Red for admin
@@ -65,7 +65,7 @@ public class AdminUserItemController {
     @FXML
     private void handleDeleteUserButton(ActionEvent event) {
         if(user == null) return; // Safety check
-        if(user.getid() == UserSession.getInstance().getUser().getid()) {
+        if(user.getId() == UserSession.getInstance().getUser().getId()) {
             Alert selfDeleteAlert = new Alert(Alert.AlertType.WARNING);
             selfDeleteAlert.setContentText("why you want delete urself?");
             selfDeleteAlert.show();
@@ -75,14 +75,14 @@ public class AdminUserItemController {
         // 1. Create a confirmation dialog
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Delete User");
-        alert.setHeaderText("Are you sure you want to delete " + user.getname() + "?");
+        alert.setHeaderText("Are you sure you want to delete " + user.getName() + "?");
         alert.setContentText("This action cannot be undone.");
 
         // 2. If the user clicks "OK", proceed with deletion
         if (alert.showAndWait().get() == ButtonType.OK) {
             UserDao dao = new UserDao();
             // Convert the int user_id to String for your method
-            boolean success = dao.deleteUser(user.getid());
+            boolean success = dao.deleteUser(user.getId());
 
             if (success) {
                 System.out.println("User deleted successfully.");

@@ -43,7 +43,7 @@ public class CreateEventController {
     @FXML
     private void handleSaveEvent() {
         // Security check based on your DAO level requirements
-        if (UserSession.getInstance().getUser().getrole().getLevel() < 60) {
+        if (UserSession.getInstance().getUser().getRole().getLevel() < 60) {
             new Alert(Alert.AlertType.ERROR, "Unauthorized: Insufficient permissions.").show();
             return;
         }
@@ -81,7 +81,7 @@ public class CreateEventController {
             newEvent.setDate(dpDate.getValue().toString());
             newEvent.setVenue(Integer.parseInt(txtVenueId.getText()));
             newEvent.setMax_attendees(Integer.parseInt(txtMaxAttendees.getText()));
-            newEvent.setOrganizer(UserSession.getInstance().getUser().getid());
+            newEvent.setOrganizer(UserSession.getInstance().getUser().getId());
             newEvent.setStatus("UPCOMING");
             newEvent.setBasePrice(Double.parseDouble(txtbasePrice.getText()));
             newEvent.setType(type);

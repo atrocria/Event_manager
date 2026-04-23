@@ -35,7 +35,6 @@ public class MainController {
     @FXML private Button btnStaffPanel;
     @FXML private Button btnEventCreationPanel;
     @FXML private Button btnShowTicketPanel;
-    @FXML private Button btnArtistSpeakerPanel;
     @FXML private Button btnLogoutPanel;
     
     @FXML private Label lblUserStatus;
@@ -72,7 +71,7 @@ public class MainController {
         });
 
         // 4. Role & Permissions Logic
-        userActualRank = currentUser.getrole(); 
+        userActualRank = currentUser.getRole();
         roleSelector.getItems().clear(); 
 
         // Fill the selector with allowed roles based on rank
@@ -101,7 +100,6 @@ public class MainController {
         setIcon(btnAdminPanel, "/icons/admin_icon.png");
         setIcon(btnStaffPanel, "/icons/staff_icon.png");
         setIcon(btnEventCreationPanel, "/icons/plus_icon.png");
-        setIcon(btnArtistSpeakerPanel, "/icons/artist_icon.png");
         setIcon(btnCartPanel, "/icons/cart_icon.png");
         setIcon(btnEventPanel, "/icons/event_icon.png");
         setIcon(btnShowTicketPanel, "/icons/ticket_icon.png");
@@ -257,18 +255,6 @@ public class MainController {
     private void handleCreateEventButton(ActionEvent event) {
         loadView("/CreateEvent.fxml");
     }
-    @FXML
-    private void handleArtistSpeakerButton(ActionEvent event) {
-        currentViewPath = "/ArtistSpeaker.fxml";
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ArtistSpeaker.fxml"));
-            Parent root = loader.load(); 
-
-            contentArea.getChildren().setAll(root);
-        } catch (IOException e) {
-            e.printStackTrace(); // Use printStackTrace to see exactly what failed
-        }
-    }
 
     // bottom
     @FXML
@@ -281,7 +267,7 @@ public class MainController {
 
     void loadView(String fxmlFile) {
         UserModel user = UserSession.getInstance().getUser();
-        if (fxmlFile.equals("/AdminPanel.fxml") && user.getrole() != UserRole.ADMIN) {
+        if (fxmlFile.equals("/AdminPanel.fxml") && user.getRole() != UserRole.ADMIN) {
             System.out.println("Access Denied to Admin Panel");
             loadView("/Dashboard.fxml"); // Redirect to safety
             return;
@@ -319,7 +305,7 @@ public class MainController {
 
             // Pass the event data to the Detail Controller
             EventDetailController controller = loader.getController();
-            controller.initializeDetails(event, currentUser.getrole());
+            controller.initializeDetails(event, currentUser.getRole());
 
             this.currentViewPath = "/EventDetail.fxml";
 
@@ -343,7 +329,6 @@ public class MainController {
         btnAdminPanel.setVisible(selectedRole == UserRole.ADMIN);
         btnStaffPanel.setVisible(selectedRole.getLevel() >= 80);
         btnEventCreationPanel.setVisible(selectedRole.getLevel() >= 60);
-        btnArtistSpeakerPanel.setVisible(selectedRole.getLevel() >= 40);
 
         // If a user was on the Admin Panel but switched to "Attendee" view,
         // kick them back to the Dashboard

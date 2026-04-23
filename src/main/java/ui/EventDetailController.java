@@ -57,7 +57,7 @@ public class EventDetailController {
         EventDAO eventDAO = new EventDAO();
 
         // If already registered, disable the button so they can't click it again
-        if (eventDAO.isUserRegistered(currentUser.getid(), event.getID())) {
+        if (eventDAO.isUserRegistered(currentUser.getId(), event.getID())) {
             bookTicketButton.setDisable(true);
             bookTicketButton.setText("Already Registered");
         }
@@ -151,7 +151,10 @@ public class EventDetailController {
     // set by level 60+ (organizer) can see manage attendees and ticketing
     private void adminControlsVisibility(UserRole role) {
         UserModel currentUser = UserSession.getInstance().getUser();
-        boolean isAdmin = currentUser != null && currentUser.getrole() == UserRole.ADMIN;
+        boolean isAdmin = currentUser != null && currentUser.getRole() == UserRole.ADMIN;
+
+        deleteEvent.setVisible(false);
+        deleteEvent.setManaged(false);
 
         if (!isAdmin) return;
 
@@ -192,7 +195,7 @@ public class EventDetailController {
         if (selectedType == null) selectedType = "STANDARD";
 
         // Call the DAO (which handles the seat/ID generation and the price math)
-        String result = eventDAO.registerUserForEvent(currentUser.getid(), currentEvent, selectedType);
+        String result = eventDAO.registerUserForEvent(currentUser.getId(), currentEvent, selectedType);
 
         if (result.startsWith("SUCCESS:")) {
             String[] parts = result.split(":");
@@ -224,7 +227,7 @@ public class EventDetailController {
     private void handleDeleteEvent() {
         // 1. Double-check Authorization (Internal Guard)
         UserModel currentUser = UserSession.getInstance().getUser();
-        if (currentUser == null || currentUser.getrole() != UserRole.ADMIN) {
+        if (currentUser == null || currentUser.getRole() != UserRole.ADMIN) {
             showError("Unauthorized", "Only administrators can delete events.");
             return;
         }
