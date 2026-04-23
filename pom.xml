@@ -12,7 +12,6 @@
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Matching your Temurin 25 setup -->
         <javafx.version>25.0.2</javafx.version> 
     </properties>
 
@@ -46,14 +45,13 @@
 
     <build>
         <plugins>
-            <!-- 1. Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
             </plugin>
 
-            <!-- 2. Create the executable Jar (Shade) -->
+            <!-- Create the Fat JAR using the Launcher -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -65,7 +63,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>ui.App</mainClass>
+                                    <mainClass>ui.Launcher</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>
@@ -83,7 +81,7 @@
                 </executions>
             </plugin>
 
-            <!-- 3. Official jpackage tool to create the EXE with bundled JRE -->
+            <!-- Create the Portable EXE folder -->
             <plugin>
                 <groupId>org.panteleyev</groupId>
                 <artifactId>jpackage-maven-plugin</artifactId>
@@ -95,17 +93,13 @@
                         <goals><goal>jpackage</goal></goals>
                         <configuration>
                             <name>EventManager</name>
-                            <type>EXE</type>
+                            <type>APP_IMAGE</type>
                             <appVersion>1.0.0</appVersion>
                             <vendor>com.eventmanager</vendor>
                             <destination>target/dist</destination>
                             <input>target</input>
                             <mainJar>${project.artifactId}-${project.version}.jar</mainJar>
-                            <mainClass>ui.App</mainClass>
-                            <winDirChooser>true</winDirChooser>
-                            <winShortcut>true</winShortcut>
-                            <winMenu>true</winMenu>
-                            <!-- This command tells it to include a JRE -->
+                            <mainClass>ui.Launcher</mainClass>
                             <runtimeImage>${java.home}</runtimeImage>
                         </configuration>
                     </execution>
