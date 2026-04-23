@@ -41,8 +41,8 @@ public class EventDAO {
 
         String sql = "INSERT INTO event (title, description, event_date, start_time, venue_id, " +
                     "organizer_id, max_attendees, registration_deadline, status, type, " +
-                    "performer, research_topic, keynote_speaker, material_list, duration_min) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "performer, research_topic, keynote_speaker, material_list, duration_min, base_price) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Database.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -65,12 +65,13 @@ public class EventDAO {
             pstmt.setString(9, event.getStatus());
             pstmt.setString(10, event.getType());
 
-            // 11-15: Specific Subclass Fields (Null-safe)
+            // 11-16: Specific Subclass Fields (Null-safe)
             pstmt.setNull(11, java.sql.Types.VARCHAR); // performer
             pstmt.setNull(12, java.sql.Types.VARCHAR); // research_topic
             pstmt.setNull(13, java.sql.Types.VARCHAR); // keynote_speaker
             pstmt.setNull(14, java.sql.Types.VARCHAR); // material_list
             pstmt.setInt(15, event.getDurationMin() > 0 ? event.getDurationMin() : 60); // duration_min
+            pstmt.setDouble(16, event.getBasePrice() > 0 ? event.getBasePrice() : 0.0); // base_price
 
             if (event instanceof ConcertEvent) {
                 pstmt.setString(11, ((ConcertEvent) event).getArtistName());
@@ -141,7 +142,7 @@ public class EventDAO {
             event = cfe; // Don't forget this assignment!
         } else if ("WORKSHOP".equalsIgnoreCase(type)) {
             WorkshopEvent ws = new WorkshopEvent();
-            ws.setDiscussionTopics(rs.getString("discussion_topics"));
+            ws.setDiscussionTopics(rs.getString("research_topic"));
             ws.setMaterialList(rs.getString("material_list"));
             event = ws;
         } else {
@@ -210,6 +211,18 @@ public class EventDAO {
             e.printStackTrace();
         }
         return attendees;
+    }
+
+    public List<String> getRegisteredUserNames(int eventId) {
+        List<String> names = new ArrayList<>();
+        // Reuse your existing logic that fetches UserModels
+        List<UserModel> attendees = getAttendeesForEvent(eventId);
+        
+        for (UserModel user : attendees) {
+            // Assuming your UserModel has a getName() method
+            names.add(user.getname()); 
+        }
+        return names;
     }
     
     // from searcher inside eventpagecontroller, search via string

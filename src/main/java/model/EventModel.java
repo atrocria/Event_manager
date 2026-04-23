@@ -19,11 +19,12 @@ public abstract class EventModel {
     private int durationMin;
     private int max_attendees;
     private List<UserModel> attendees;
+    private double basePrice;
 
     public EventModel() {}
 
     public EventModel(int id, String title, String description, int venue, String date, LocalDateTime startTime, int organizer, int durationMin, String registrationDeadLine, int max_attendees, String status, LocalDateTime creationTime, 
-            String type, List<UserModel> attendees) {
+            String type, List<UserModel> attendees, double basePrice) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -38,6 +39,7 @@ public abstract class EventModel {
         this.creationTime = creationTime;
         this.type = type;
         this.attendees = attendees;
+        this.basePrice = basePrice;
     }
     
     // Getters
@@ -56,6 +58,8 @@ public abstract class EventModel {
     public String getStatus() {return status;}
     public String getType() {return type;}
     public LocalDateTime getCreationTime() {return creationTime;}
+    public double getBasePrice() { return basePrice; }
+
     
     // setters
     public void setID(int var1) {this.id = var1;}
@@ -71,6 +75,7 @@ public abstract class EventModel {
     public void setRegistrationDeadLine(String var1) {this.registrationDeadLine = var1;}
     public void setStatus(String var1) {this.status = var1;}
     public void setType(String var1) {this.type = var1;}
+    public void setBasePrice(double basePrice) { this.basePrice = basePrice; }
 
     public void setCreationTime(LocalDateTime var1) {this.creationTime = var1;}
     public LocalDateTime getEndTime(int durationMin) {
@@ -79,5 +84,8 @@ public abstract class EventModel {
         return startTime.plusMinutes(durationMin);
     }
 
-    public abstract double calculateTicketPrice();
+    // In Event.java (Parent)
+    public double calculateTicketPrice(String ticketType) {
+        return getBasePrice(); // No fancy math here, keep it for the subclasses!
+    }
 }

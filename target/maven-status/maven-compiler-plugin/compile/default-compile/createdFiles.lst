@@ -4,7 +4,6 @@ ui\PostPaymentDetailsController.class
 service\PermissionService.class
 dao\UserDao.class
 ui\EventDetailController.class
-model\ConcertTicketType.class
 model\UserModel.class
 ui\ArtistSpeakerController.class
 model\UserRole.class

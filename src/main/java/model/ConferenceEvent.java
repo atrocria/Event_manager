@@ -13,8 +13,8 @@ public class ConferenceEvent extends EventModel {
 
     public ConferenceEvent(int id, String title, String description, int venue, String date, LocalDateTime startTime,
             int organizer, int durationMin, String registrationDeadLine, int max_attendees, String status,
-            LocalDateTime creationTime, String type, List<UserModel> attendees, List<String> sessions, String researchTopic, String keynoteSpeaker, String speakerBio) {
-        super(id, title, description, venue, date, startTime, organizer, durationMin, registrationDeadLine, max_attendees, status, creationTime, type, attendees);
+            LocalDateTime creationTime, String type, List<UserModel> attendees, List<String> sessions, String researchTopic, String keynoteSpeaker, String speakerBio, double basePrice) {
+        super(id, title, description, venue, date, startTime, organizer, durationMin, registrationDeadLine, max_attendees, status, creationTime, type, attendees, basePrice);
         this.sessions = sessions;
         this.researchTopic = researchTopic;
         this.keynoteSpeaker = keynoteSpeaker;
@@ -30,16 +30,4 @@ public class ConferenceEvent extends EventModel {
     public void setKeynoteSpeaker(String var1) {this.keynoteSpeaker = var1;}
     public void setResearchTopic(String var1) {this.researchTopic = var1;}
     public void setSpeakerBio(String var1) {this.speakerBio = var1;}
-
-    @Override
-    public double calculateTicketPrice() {
-        // Base price for conference events
-        double basePrice = 150.0;
-
-        // Additional cost based on the number of sessions
-        double sessionCost = sessions != null ? sessions.size() * 20.0 : 0.0;
-
-        // Total ticket price
-        return basePrice + sessionCost;
-    }
 }

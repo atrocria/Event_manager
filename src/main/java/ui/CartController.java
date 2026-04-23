@@ -45,7 +45,7 @@ public class CartController {
         for (EventModel event : events) {
             addEventToMainList(event);
             addEventToSummary(event);
-            total += event.calculateTicketPrice();
+            total += event.calculateTicketPrice(event.getType());
         }
 
         lblSubtotal.setText(String.format("$%.2f", total));
@@ -77,7 +77,7 @@ public class CartController {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         
-        Label price = new Label(String.format("$%.2f", event.calculateTicketPrice()));
+        Label price = new Label(String.format("$%.2f", event.calculateTicketPrice(event.getType())));
         price.setStyle("-fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         row.getChildren().addAll(name, spacer, price);

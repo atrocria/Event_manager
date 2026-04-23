@@ -16,9 +16,9 @@ public class ConcertEvent extends EventModel {
     public ConcertEvent(int id, String title, String description, int venue, String date, LocalDateTime startTime,
             int organizer, int durationMin, String registrationDeadLine, int max_attendees, String status,
             LocalDateTime creationTime, String type, List<UserModel> attendees, String artistName, GenreModel genre,
-            String ticketType) {
+            String ticketType, double basePrice) {
         super(id, title, description, venue, date, startTime, organizer, durationMin, registrationDeadLine,
-                max_attendees, status, creationTime, type, attendees);
+                max_attendees, status, creationTime, type, attendees, basePrice);
         this.artistName = artistName;
         this.genre = genre;
         this.ticketType = ticketType;
@@ -96,12 +96,17 @@ public class ConcertEvent extends EventModel {
     }
 
     @Override
-    public double calculateTicketPrice(){
-        //early bird prices?
-        if (isEarlyBirdEligible()) {
-            return 50.0; // example early bird price
-        } else {
-            return 100.0; // regular price
+    public double calculateTicketPrice(String ticketType) {
+        double price = getBasePrice(); // Starts at 100.0 (from DB)
+
+        if (ticketType.equalsIgnoreCase("VIP")) {
+            price *= 1.5; // Now 150.0
         }
+
+        if (isEarlyBirdEligible()) {
+            price *= 0.8; // Now 120.0
+        }
+        
+        return price; // Returns 120.0
     }
 }

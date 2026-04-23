@@ -1,9 +1,12 @@
 package ui;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -14,6 +17,9 @@ import model.UserModel;
 import model.UserRole;
 import model.WorkshopEvent;
 import utils.UserSession;
+
+import java.util.List;
+
 import dao.EventDAO;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -31,13 +37,16 @@ public class EventDetailController {
     @FXML private Label eligibilityLabel;
     @FXML private Button bookTicketButton;
     
+    @FXML private TitledPane attendeePane;
+    @FXML private ListView<String> attendeeListView;
     @FXML private ComboBox<String> ticketTypeComboBox;
     @FXML private ComboBox<String> numberOfTicketsComboBox;
     @FXML private Button deleteEvent;
 
     private EventModel currentEvent;
     private final EventDAO eventDAO = new EventDAO();
-
+    
+    
     public void initializeDetails(EventModel event, UserRole userRole) {
         this.currentEvent = event;
         populateDetails();
@@ -119,14 +128,37 @@ public class EventDetailController {
     }
 
     // set by level 60+ (organizer) can see manage attendees and ticketing
-    @FXML
     private void adminControlsVisibility(UserRole role) {
         UserModel currentUser = UserSession.getInstance().getUser();
         boolean isAdmin = currentUser != null && currentUser.getrole() == UserRole.ADMIN;
 
-        // Only show admin controls if user is an admin
+        if (!isAdmin) return;
+
         deleteEvent.setVisible(isAdmin);
         deleteEvent.setManaged(isAdmin);
+        
+        // Manage visibility of the attendee pane
+        attendeePane.setVisible(isAdmin);
+        attendeePane.setManaged(isAdmin);
+
+        if (isAdmin) {
+            setupAttendeeLoading();
+        }
+    }
+
+    private void setupAttendeeLoading() {
+        attendeePane.expandedProperty().addListener((obs, wasExpanded, isNowExpanded) -> {
+            if (isNowExpanded && currentEvent != null) {
+                List<String> names = eventDAO.getRegisteredUserNames(currentEvent.getID());
+                
+                if (names.isEmpty()) {
+                    attendeeListView.setItems(FXCollections.observableArrayList("No attendees yet."));
+                } else {
+                    // This is the line you asked about!
+                    attendeeListView.setItems(FXCollections.observableArrayList(names));
+                }
+            }
+        });
     }
 
     @FXML

@@ -42,7 +42,7 @@ public class CheckoutController {
 
     public void prepareCheckout(List<EventModel> items) {
         if (items != null) {
-            this.pendingTotal = items.stream().mapToDouble(EventModel::calculateTicketPrice).sum();
+            this.pendingTotal = items.stream().mapToDouble(event -> event.calculateTicketPrice(event.getType())).sum();
             if (lblFinalTotal != null) {
                 updateTotalDisplay();
             }
