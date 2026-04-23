@@ -24,6 +24,7 @@ ui\EventPageController.class
 ui\MainController.class
 ui\DashboardController.class
 module-info.class
+ui\ShowTicketController.class
 ui\StaffPageController.class
 ui\AdminPageController$AdminView.class
 ui\EventItemController.class
@@ -34,4 +35,5 @@ model\EventModel.class
 model\WorkshopEvent.class
 ui\CartItemController.class
 ui\AdminUserItemController$1.class
+ui\ShowTicketController$TicketRow.class
 model\ConcertEvent.class

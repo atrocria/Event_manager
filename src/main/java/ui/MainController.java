@@ -6,7 +6,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -22,14 +25,18 @@ import javafx.event.ActionEvent;
 
 public class MainController {
     
-    @FXML private Button btnCreateEvent;
+    @FXML private Button btnDashboardPanel;
+    @FXML private Button btnEventPanel;
+    @FXML private Button btnCartPanel;
     @FXML private Button btnMySessions;
     @FXML private Button btnMyConcert;
     @FXML private Button btnMyKeynote;
     @FXML private Button btnAdminPanel;
     @FXML private Button btnStaffPanel;
     @FXML private Button btnEventCreationPanel;
+    @FXML private Button btnShowTicketPanel;
     @FXML private Button btnArtistSpeakerPanel;
+    @FXML private Button btnLogoutPanel;
     
     @FXML private Label lblUserStatus;
     
@@ -90,7 +97,45 @@ public class MainController {
             }
         });
 
+        setIcon(btnDashboardPanel, "/icons/dashboard_icon.png");
+        setIcon(btnAdminPanel, "/icons/admin_icon.png");
+        setIcon(btnStaffPanel, "/icons/staff_icon.png");
+        setIcon(btnEventCreationPanel, "/icons/plus_icon.png");
+        setIcon(btnArtistSpeakerPanel, "/icons/artist_icon.png");
+        setIcon(btnCartPanel, "/icons/cart_icon.png");
+        setIcon(btnEventPanel, "/icons/event_icon.png");
+        setIcon(btnShowTicketPanel, "/icons/ticket_icon.png");
+        setIcon(btnLogoutPanel, "/icons/logout_icon.png");
         handleDashboardButton(null);
+    }
+
+    private void setIcon(Button button, String path) {
+        try {
+            // Try to get the resource from the class loader
+            var resource = getClass().getResource(path);
+            if (resource == null) {
+                System.out.println("Could not find icon at: " + path);
+                return;
+            }
+            
+            Image icon = new Image(resource.toExternalForm());
+            ImageView imageView = new ImageView(icon);
+            
+            imageView.setFitWidth(20); 
+            imageView.setFitHeight(20);
+            imageView.setPreserveRatio(true);
+
+            javafx.scene.effect.ColorAdjust whiteEffect = new javafx.scene.effect.ColorAdjust();
+            whiteEffect.setBrightness(1.0); // Pushes all colors toward white
+            imageView.setEffect(whiteEffect);
+            
+            button.setGraphic(imageView);
+            // This line removes the text so it fits your thin sidebar
+            button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY); 
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // Add these variables at the top of your class
@@ -170,6 +215,10 @@ public class MainController {
         loadView("/Cart.fxml");
     }
     @FXML
+    private void handleShowTicketButton(ActionEvent event) {
+        loadView("/ShowTicket.fxml");
+    }
+    @FXML
     private void handleAdminButton(ActionEvent event) {
         currentViewPath = "/AdminPanel.fxml";
         try {
@@ -223,7 +272,7 @@ public class MainController {
 
     // bottom
     @FXML
-    private void handleProfileButton(ActionEvent event) {
+    private void handleLogoutButton(ActionEvent event) {
         loadView("/Profile.fxml");
     }
 

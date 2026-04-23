@@ -37,13 +37,14 @@ public class StaffPageController {
 
     private final EventDAO eventDAO = new EventDAO();
     private ObservableList<AttendeeView> attendeeData = FXCollections.observableArrayList();
+    private ObservableList<UserModel> userData = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
         setupAttendanceTable();
         setupPermissionsTable();
         loadAttendeeData();
-        // loadUserData(); // You'll need a method in DAO to get all users
+        loadUserData(); // You'll need a method in DAO to get all users
     }
 
     private void setupAttendanceTable() {
@@ -68,13 +69,15 @@ public class StaffPageController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    AttendeeView data = getTableView().getItems().get(getIndex());
-                    btn.setDisable("CHECKED_IN".equals(data.getStatus()));
-                    setGraphic(btn);
+                    UserModel user = getTableView().getItems().get(getIndex());
+                    // This ensures the ComboBox shows the user's current role
+                    roleCombo.setValue(user.getRole()); 
+                    setGraphic(container);
                 }
             }
         });
 
+        
         // Search Filter Logic
         FilteredList<AttendeeView> filteredData = new FilteredList<>(attendeeData, p -> true);
         txtSearchAttendee.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -87,6 +90,13 @@ public class StaffPageController {
             });
         });
         tblAttendance.setItems(filteredData);
+    }
+    
+    private void loadUserData() {
+        userData.clear();
+        // Assuming your eventDAO has a method to get all users
+        userData.addAll(eventDAO.getAllUsers()); 
+        tblUsers.setItems(userData);
     }
 
     @FXML

@@ -100,13 +100,13 @@ public class ConcertEvent extends EventModel {
         double price = getBasePrice(); // Starts at 100.0 (from DB)
 
         if (ticketType.equalsIgnoreCase("VIP")) {
-            price *= 1.5; // Now 150.0
+            price *= 2.0; // Now 200.0
         }
 
         if (isEarlyBirdEligible()) {
-            price *= 0.8; // Now 120.0
+            price *= 0.8; // Now 160.0
         }
         
-        return price; // Returns 120.0
+        return price;
     }
 }

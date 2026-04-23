@@ -17,6 +17,7 @@ import model.AttendeeView;
 import model.ConcertEvent;
 import model.ConferenceEvent;
 import model.WorkshopEvent;
+import ui.ShowTicketController;
 import utils.UserSession;
 import model.EventModel;
 import model.UserModel;
@@ -34,8 +35,16 @@ public class EventDAO {
     public void addEvent(EventModel event) {
         UserModel user = UserSession.getInstance().getUser();
 
+        // 1. Security Check
         if (user == null || user.getrole().getLevel() < 60) {
             System.err.println("SECURITY ALERT: Unauthorized attempt to add event.");
+            return;
+        }
+
+        // 2. Venue Capacity Check (Linking up with Venue table)
+        if (!isVenueBigEnough(event.getVenue(), event.getMax_attendees())) {
+            System.err.println("❌ Error: Event capacity exceeds venue limit.");
+            // Optional: Throw an exception here so the UI can show an alert
             return;
         }
 
@@ -47,7 +56,7 @@ public class EventDAO {
         try (Connection conn = Database.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            // 1-10: Standard Fields
+            // Standard Fields
             pstmt.setString(1, event.getTitle());
             pstmt.setString(2, event.getDescription());
             pstmt.setString(3, event.getDate());
@@ -55,7 +64,7 @@ public class EventDAO {
             if (event.getStartTime() != null) {
                 pstmt.setTime(4, java.sql.Time.valueOf(event.getStartTime().toLocalTime()));
             } else {
-                System.err.println("❌ Error: Start Time is required to save an event.");
+                pstmt.setNull(4, java.sql.Types.TIME);
             }
 
             pstmt.setInt(5, event.getVenue());
@@ -65,22 +74,26 @@ public class EventDAO {
             pstmt.setString(9, event.getStatus());
             pstmt.setString(10, event.getType());
 
-            // 11-16: Specific Subclass Fields (Null-safe)
+            // --- DYNAMIC SUBCLASS MAPPING (FIXED) ---
+            // Initialize all as null first
             pstmt.setNull(11, java.sql.Types.VARCHAR); // performer
             pstmt.setNull(12, java.sql.Types.VARCHAR); // research_topic
             pstmt.setNull(13, java.sql.Types.VARCHAR); // keynote_speaker
             pstmt.setNull(14, java.sql.Types.VARCHAR); // material_list
-            pstmt.setInt(15, event.getDurationMin() > 0 ? event.getDurationMin() : 60); // duration_min
-            pstmt.setDouble(16, event.getBasePrice() > 0 ? event.getBasePrice() : 0.0); // base_price
 
-            if (event instanceof ConcertEvent) {
-                pstmt.setString(11, ((ConcertEvent) event).getArtistName());
-            } else if (event instanceof ConferenceEvent) {
-                pstmt.setString(12, ((ConferenceEvent) event).getResearchTopic());
-                pstmt.setString(13, ((ConferenceEvent) event).getKeynoteSpeaker());
-            } else if (event instanceof WorkshopEvent) {
-                pstmt.setString(14, ((WorkshopEvent) event).getMaterialList());
+            if (event instanceof ConcertEvent concert) {
+                pstmt.setString(11, concert.getArtistName());
+            } else if (event instanceof ConferenceEvent conf) {
+                pstmt.setString(12, conf.getResearchTopic());
+                pstmt.setString(13, conf.getKeynoteSpeaker());
+            } else if (event instanceof WorkshopEvent workshop) {
+                // Check if research_topic column is used for discussion topics in your DB
+                pstmt.setString(12, workshop.getDiscussionTopics()); 
+                pstmt.setString(14, workshop.getMaterialList());
             }
+
+            pstmt.setInt(15, event.getDurationMin() > 0 ? event.getDurationMin() : 60);
+            pstmt.setDouble(16, event.getBasePrice());
 
             pstmt.executeUpdate();
             System.out.println("✅ Event successfully saved: " + event.getTitle());
@@ -88,6 +101,25 @@ public class EventDAO {
         } catch (SQLException e) {
             Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "❌ SQL Error: Failed to save event!", e);
         }
+    }
+
+    public List<UserModel> getAllUsers() {
+        List<UserModel> users = new ArrayList<>();
+        String query = "SELECT id, email, role FROM users";
+        try (Connection conn = Database.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                users.add(new UserModel(
+                    rs.getInt("id"),
+                    rs.getString("email"), 
+                    UserRole.valueOf(rs.getString("role")), null
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 
     // to get all info from database, for eventpage
@@ -176,6 +208,7 @@ public class EventDAO {
         event.setDurationMin(rs.getInt("duration_min")); // Fixed
         event.setDescription(rs.getString("description")); // Fixed
         event.setType(type);
+        event.setBasePrice(rs.getDouble("base_price")); // set price
 
         int eventId = rs.getInt("event_id");
         event.setAttendees(getAttendeesForEvent(eventId));
@@ -215,13 +248,15 @@ public class EventDAO {
 
     public List<String> getRegisteredUserNames(int eventId) {
         List<String> names = new ArrayList<>();
-        // Reuse your existing logic that fetches UserModels
-        List<UserModel> attendees = getAttendeesForEvent(eventId);
-        
-        for (UserModel user : attendees) {
-            // Assuming your UserModel has a getName() method
-            names.add(user.getname()); 
-        }
+        String sql = "SELECT u.name FROM user u JOIN registration r ON u.user_id = r.user_id WHERE r.event_id = ?";
+        try (Connection conn = Database.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, eventId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                names.add(rs.getString("name"));
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
         return names;
     }
     
@@ -276,27 +311,84 @@ public class EventDAO {
     }
 
     // Updated version of your existing method to include a safety check
-    public void registerUserForEvent(int userId, int eventId, String ticketType) {
-        // 1. Safety Check: Prevent duplicate entry error
-        if (isUserRegistered(userId, eventId)) {
-            System.out.println("User " + userId + " is already registered for event " + eventId);
-            return; // Exit early
-        }
+    public String registerUserForEvent(int userId, EventModel event, String ticketType) {
+        // 1. Basic Checks using your existing wrapper methods
+        if (isUserRegistered(userId, event.getID())) return "ALREADY_REGISTERED";
+        if (event.getAttendees().size() >= event.getMax_attendees()) return "EVENT_FULL";
 
-        String sql = "INSERT INTO registration (user_id, event_id, ticket_type) VALUES (?, ?, ?)";
+        // 2. Assign Seat and Generate Booking ID
+        String assignedSeat = "S-" + (event.getAttendees().size());
+        String bookingCode = "BK-" + event.getID() + "-" + (System.currentTimeMillis() % 10000);
+        
+        // 3. Calculate Price (Calling the logic inside your ConcertEvent/etc.)
+        double finalPrice = event.calculateTicketPrice(ticketType);
+
+        // 4. Final SQL Insert
+        String sql = "INSERT INTO registration (user_id, event_id, ticket_type, seat_number, booking_code, amount_paid) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Database.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, userId);
-            pstmt.setInt(2, eventId);
+            pstmt.setInt(2, event.getID());
             pstmt.setString(3, (ticketType != null) ? ticketType : "STANDARD");
+            pstmt.setString(4, assignedSeat);
+            pstmt.setString(5, bookingCode);
+            pstmt.setDouble(6, finalPrice); // Captures the exact money paid!
 
             pstmt.executeUpdate();
-            System.out.println("User " + userId + " registered for event " + eventId + " with ticket: " + ticketType);
+            return "SUCCESS:" + assignedSeat + ":" + bookingCode;
         } catch (SQLException e) {
-            Logger.getLogger(EventDAO.class.getName()).log(Level.SEVERE, "Registration Failed", e);
+            e.printStackTrace();
+            return "ERROR";
         }
+    }
+
+    public List<ShowTicketController.TicketRow> getDetailedTicketsByUserId(int userId) {
+        List<ShowTicketController.TicketRow> list = new ArrayList<>();
+        String sql = "SELECT e.title, r.booking_id, r.seat_number, r.payment_status, r.amount_paid " +
+                    "FROM registration r JOIN event e ON r.event_id = e.event_id " +
+                    "WHERE r.user_id = ?";
+
+        try (Connection conn = Database.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                list.add(new ShowTicketController.TicketRow(
+                    rs.getString("title"),
+                    rs.getString("booking_id"),
+                    rs.getString("seat_number"),
+                    rs.getString("payment_status"),
+                    rs.getDouble("amount_paid")
+                ));
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
+
+    public boolean isVenueBigEnough(int venueId, int requestedMaxAttendees) {
+        String sql = "SELECT capacity FROM venue WHERE venue_id = ?";
+        try (Connection conn = Database.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, venueId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("capacity") >= requestedMaxAttendees;
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public double getTotalRevenueForEvent(int eventId) {
+        String sql = "SELECT SUM(amount_paid) FROM registration WHERE event_id = ?";
+        try (Connection conn = Database.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, eventId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) return rs.getDouble(1);
+        } catch (SQLException e) { e.printStackTrace(); }
+        return 0.0;
     }
 
     // Fetch list of people who PAID but haven't CHECKED_IN

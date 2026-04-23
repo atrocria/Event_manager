@@ -5,65 +5,71 @@
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #1a1a1a;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.CreateEventController">
-   <children>
-      <VBox spacing="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="30.0">
+<ScrollPane fitToWidth="true" style="-fx-background-color: #1a1a1a;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.CreateEventController">
+   <content>
+      <AnchorPane prefWidth="780.0" style="-fx-background-color: #1a1a1a;">
          <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Create New Event">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-            </Text>
-            
-            <GridPane hgap="15.0" vgap="15.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="400.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+            <VBox spacing="15.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="20.0">
                <children>
-                  <Label text="Event Title:" textFill="WHITE" />
-                  <TextField fx:id="txtTitle" promptText="Enter event name" GridPane.columnIndex="1" />
+                  <Text fill="WHITE" text="New Event Details">
+                     <font>
+                        <Font name="System Bold" size="22.0" />
+                     </font>
+                  </Text>
                   
-                  <Label text="Description:" textFill="WHITE" GridPane.rowIndex="1" />
-                  <TextArea fx:id="txtDescription" prefHeight="200.0" prefWidth="200.0" promptText="Describe the event..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Separator opacity="0.1" />
                   
-                  <Label text="Date &amp; Time (HH:mm):" textFill="WHITE" GridPane.rowIndex="2" />
-                  <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <GridPane hgap="15.0" vgap="12.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="150.0" />
+                      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="400.0" />
+                    </columnConstraints>
                      <children>
-                        <DatePicker fx:id="dpDate" prefWidth="200.0" />
-                        <TextField fx:id="txtStartTime" prefWidth="100.0" promptText="18:30" />
-                     </children>
-                  </HBox>
-                  
-                  <Label text="Venue ID:" textFill="WHITE" GridPane.rowIndex="3" />
-                  <TextField fx:id="txtVenueId" promptText="Enter numeric Venue ID" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  
-                  <Label text="Max Attendees:" textFill="WHITE" GridPane.rowIndex="4" />
-                  <TextField fx:id="txtMaxAttendees" promptText="e.g. 100" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  
-                  <Label text="Event Type:" textFill="WHITE" GridPane.rowIndex="5" />
-                  <ComboBox fx:id="cbEventType" prefWidth="200.0" promptText="Select Type" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  
-                  <Label fx:id="lblSpecificField" text="Specific Info:" textFill="WHITE" GridPane.rowIndex="6" />
-                  <TextField fx:id="txtSpecificField" promptText="Additional details..." GridPane.columnIndex="1" GridPane.rowIndex="6" />
-               </children>
-            </GridPane>
+                        <Label text="Event Title:" textFill="WHITE" />
+                        <TextField fx:id="txtTitle" promptText="Enter event name" GridPane.columnIndex="1" />
+                        
+                        <Label text="Description:" textFill="WHITE" GridPane.rowIndex="1" />
+                        <TextArea fx:id="txtDescription" prefHeight="70.0" promptText="Describe the event..." wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        
+                        <Label text="Date &amp; Time:" textFill="WHITE" GridPane.rowIndex="2" />
+                        <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <children>
+                              <DatePicker fx:id="dpDate" prefWidth="180.0" />
+                              <TextField fx:id="txtStartTime" prefWidth="100.0" promptText="HH:mm" />
+                           </children>
+                        </HBox>
+                        
+                        <Label text="Venue &amp; Capacity:" textFill="WHITE" GridPane.rowIndex="3" />
+                        <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <children>
+                              <TextField fx:id="txtVenueId" prefWidth="140.0" promptText="Venue ID" />
+                              <TextField fx:id="txtMaxAttendees" prefWidth="140.0" promptText="Max Seats" />
+                           </children>
+                        </HBox>
 
-            <HBox alignment="CENTER_RIGHT" spacing="15.0">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#handleSaveEvent" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="SAVE EVENT" />
+                        <Label text="Base Price ($):" textFill="WHITE" GridPane.rowIndex="4" />
+                        <TextField fx:id="txtbasePrice" promptText="e.g. 50.00" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        
+                        <Label text="Event Category:" textFill="WHITE" GridPane.rowIndex="5" />
+                        <ComboBox fx:id="cbEventType" prefWidth="250.0" promptText="Select Type" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        
+                        <Label fx:id="lblSpecificField" text="Extra Info:" textFill="#3498db" GridPane.rowIndex="6" />
+                        <TextField fx:id="txtSpecificField" promptText="Performer/Topic/Materials" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                     </children>
+                  </GridPane>
+
+                  <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#handleSaveEvent" prefHeight="35.0" prefWidth="160.0" 
+                                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="SAVE EVENT" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </HBox>
                </children>
-            </HBox>
+            </VBox>
          </children>
-      </VBox>
-   </children>
-</AnchorPane>
+      </AnchorPane>
+   </content>
+</ScrollPane>

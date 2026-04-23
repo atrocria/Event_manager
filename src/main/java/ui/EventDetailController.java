@@ -18,6 +18,7 @@ import model.UserRole;
 import model.WorkshopEvent;
 import utils.UserSession;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dao.EventDAO;
@@ -85,7 +86,27 @@ public class EventDetailController {
             dynamicDetailsLabel.setText(((ConcertEvent) currentEvent).getArtistName());
 
             ticketTypeComboBox.setVisible(true);
+            ticketTypeComboBox.setItems(FXCollections.observableArrayList("STANDARD", "VIP"));
+
+            int remaining = currentEvent.getMax_attendees() - currentEvent.getAttendees().size();
             numberOfTicketsComboBox.setVisible(true);
+
+            List<String> options = new ArrayList<>();
+            // Only add numbers up to the remaining capacity, capped at 5
+            int limit = Math.min(remaining, 5); // min of remaining seats and max 5 tickets per booking
+
+            for (int i = 1; i <= limit; i++) {
+                options.add(String.valueOf(i));
+            }
+
+            if (options.isEmpty()) {
+                numberOfTicketsComboBox.setDisable(true);
+                bookTicketButton.setDisable(true);
+                bookTicketButton.setText("SOLD OUT");
+            } else {
+                numberOfTicketsComboBox.setItems(FXCollections.observableArrayList(options));
+                numberOfTicketsComboBox.getSelectionModel().selectFirst();
+            }
             
             //eligible for early bird discount or VIP
             eligibilityLabel.setVisible(true);;
@@ -146,6 +167,7 @@ public class EventDetailController {
         }
     }
 
+    // attendees paid or unpaid, show in the list
     private void setupAttendeeLoading() {
         attendeePane.expandedProperty().addListener((obs, wasExpanded, isNowExpanded) -> {
             if (isNowExpanded && currentEvent != null) {
@@ -161,28 +183,41 @@ public class EventDetailController {
         });
     }
 
-    @FXML
+   @FXML
     private void handleBookTicket() {
         if (currentEvent == null) return;
 
         UserModel currentUser = UserSession.getInstance().getUser();
-        
-        if (currentUser != null && currentEvent != null) {
-            eventDAO.registerUserForEvent(currentUser.getid(), currentEvent.getID(), null); //! add a ticket type selection later
+        String selectedType = ticketTypeComboBox.getValue();
+        if (selectedType == null) selectedType = "STANDARD";
+
+        // Call the DAO (which handles the seat/ID generation and the price math)
+        String result = eventDAO.registerUserForEvent(currentUser.getid(), currentEvent, selectedType);
+
+        if (result.startsWith("SUCCESS:")) {
+            String[] parts = result.split(":");
+            // No "String" keyword here! We are just assigning the values
+            String assignedSeat = parts[1];
+            String assignedCode = parts[2];
             
-            // You would typically call a RegistrationDAO here
-            // For now, let's show a confirmation alert
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Booking Confirmation");
-            alert.setHeaderText("Registering for: " + currentEvent.getTitle());
-            alert.setContentText("Your request to book this ticket has been received!");
-            alert.showAndWait();
+            showInformationAlert("Ticket Booked!", "Seat: " + assignedSeat + "\nBooking Code: " + assignedCode);
             
-            // Disable button after booking to prevent double clicks
+            // Disable button so they don't double-book
             bookTicketButton.setDisable(true);
-            bookTicketButton.setText("Registered");
-            bookTicketButton.setDisable(true);
+            bookTicketButton.setText("Already Registered");
+        } else if (result.equals("EVENT_FULL")) {
+            showError("Sold Out", "Sorry, this event has reached its maximum capacity.");
+        } else if (result.equals("ALREADY_REGISTERED")) {
+            showError("Already Booked", "You have already registered for this event.");
         }
+    }
+    
+    private void showInformationAlert(String title, String content) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML

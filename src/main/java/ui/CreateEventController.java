@@ -18,6 +18,7 @@ public class CreateEventController {
     @FXML private TextField txtVenueId;
     @FXML private TextField txtMaxAttendees;
     @FXML private TextField txtStartTime;
+    @FXML private TextField txtbasePrice;
     @FXML private ComboBox<String> cbEventType;
     @FXML private TextField txtSpecificField;
     @FXML private Label lblSpecificField;
@@ -82,6 +83,7 @@ public class CreateEventController {
             newEvent.setMax_attendees(Integer.parseInt(txtMaxAttendees.getText()));
             newEvent.setOrganizer(UserSession.getInstance().getUser().getid());
             newEvent.setStatus("UPCOMING");
+            newEvent.setBasePrice(Double.parseDouble(txtbasePrice.getText()));
             newEvent.setType(type);
 
             // Handle Time
@@ -89,14 +91,14 @@ public class CreateEventController {
             if (timeStr == null || timeStr.isBlank()) throw new Exception("Start Time is required!");
             newEvent.setStartTime(LocalTime.parse(timeStr).atDate(dpDate.getValue()));
 
-            // Call your DAO
+            // Call DAO
             eventDAO.addEvent(newEvent);
 
             clearFields();
             new Alert(Alert.AlertType.INFORMATION, "Event Created Successfully!").show();
 
         } catch (NumberFormatException e) {
-            new Alert(Alert.AlertType.ERROR, "Venue ID and Max Attendees must be numbers.").show();
+            new Alert(Alert.AlertType.ERROR, "Venue ID, Max Attendees, and Base Price must be numbers.").show();
         } catch (java.time.format.DateTimeParseException e) {
             new Alert(Alert.AlertType.ERROR, "Invalid Time Format! Use HH:mm (e.g., 18:30)").show();
         } catch (Exception e) {

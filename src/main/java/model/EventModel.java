@@ -2,8 +2,8 @@ package model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 
-// base event
 public abstract class EventModel {
     private int id;
     private String title;
@@ -18,7 +18,7 @@ public abstract class EventModel {
     private LocalDateTime startTime;
     private int durationMin;
     private int max_attendees;
-    private List<UserModel> attendees;
+    private List<UserModel> attendees = new ArrayList<>(); // Initialize to avoid NullPointerException
     private double basePrice;
 
     public EventModel() {}
@@ -38,11 +38,44 @@ public abstract class EventModel {
         this.status = status;
         this.creationTime = creationTime;
         this.type = type;
-        this.attendees = attendees;
+        this.attendees = (attendees != null) ? attendees : new ArrayList<>();
         this.basePrice = basePrice;
     }
     
-    // Getters
+    // --- CORE LOGIC METHODS ---
+
+    /**
+     * Requirement: Ensure tickets are not oversold.
+     * Returns how many tickets are actually left.
+     */
+    public int getRemainingCapacity() {
+        return max_attendees - getRegisteredAttendees();
+    }
+
+    /**
+     * Requirement: Real-time ticket sales tracking.
+     */
+    public int getRegisteredAttendees() {
+        return (attendees != null) ? attendees.size() : 0;
+    }
+
+    /**
+     * Checks if the event is full.
+     */
+    public boolean isFull() {
+        return getRegisteredAttendees() >= max_attendees;
+    }
+
+    /**
+     * Requirement: Ticket Classes (VIP, Early Bird, etc.)
+     * This default version handles basic logic; ConcertEvent will override this.
+     */
+    // In EventModel.java
+    public double calculateTicketPrice(String ticketType) {
+        return getBasePrice(); // Default behavior: ignore the type, return base
+    }
+
+    // --- GETTERS ---
     public int getID() {return id;}
     public String getTitle() {return title;}
     public String getDate() {return date;}
@@ -51,7 +84,6 @@ public abstract class EventModel {
     public int getOrganizer() {return organizer;}
     public int getDurationMin() {return durationMin;}
     public int getMax_attendees() {return max_attendees;}
-    public int getAttendeesCount() {return attendees != null ? attendees.size() : 0;}
     public List<UserModel> getAttendees() {return attendees;}
     public String getDescription() {return description;}
     public String getRegistrationDeadLine() {return registrationDeadLine;}
@@ -60,8 +92,7 @@ public abstract class EventModel {
     public LocalDateTime getCreationTime() {return creationTime;}
     public double getBasePrice() { return basePrice; }
 
-    
-    // setters
+    // --- SETTERS ---
     public void setID(int var1) {this.id = var1;}
     public void setTitle(String var1) {this.title = var1;}
     public void setDate(String var1) {this.date = var1;}
@@ -76,16 +107,10 @@ public abstract class EventModel {
     public void setStatus(String var1) {this.status = var1;}
     public void setType(String var1) {this.type = var1;}
     public void setBasePrice(double basePrice) { this.basePrice = basePrice; }
-
     public void setCreationTime(LocalDateTime var1) {this.creationTime = var1;}
-    public LocalDateTime getEndTime(int durationMin) {
-        if (startTime == null)
-            return null;
-        return startTime.plusMinutes(durationMin);
-    }
 
-    // In Event.java (Parent)
-    public double calculateTicketPrice(String ticketType) {
-        return getBasePrice(); // No fancy math here, keep it for the subclasses!
+    public LocalDateTime getEndTime() {
+        if (startTime == null) return null;
+        return startTime.plusMinutes(durationMin);
     }
 }
